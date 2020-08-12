@@ -1,0 +1,81 @@
+{
+    "CenterCrop": [
+        {
+          "param_name": "height",
+          "placeholder": {
+            "defaults": "image_half_height",
+            "limits_list": [
+              1,
+              "image_height"
+            ]
+          },
+          "type": "num_interval"
+        },
+        {
+          "param_name": "width",
+          "placeholder": {
+            "defaults": "image_half_width",
+            "limits_list": [
+              1,
+              "image_width"
+            ]
+          },
+          "type": "num_interval"
+        }
+      ],
+      "Cutout": [
+        {
+          "defaults": 8,
+          "limits_list": [
+            1,
+            100
+          ],
+          "param_name": "num_holes",
+          "type": "num_interval"
+        },
+        {
+          "defaults": 8,
+          "limits_list": [
+            1,
+            100
+          ],
+          "param_name": "max_h_size",
+          "type": "num_interval"
+        },
+        {
+          "defaults": 8,
+          "limits_list": [
+            1,
+            100
+          ],
+          "param_name": "max_w_size",
+          "type": "num_interval"
+        },
+        {
+          "param_name": "fill_value",
+          "type": "rgb"
+        }
+      ],
+      "SmallestMaxSize": [
+        {
+          "defaults": 512,
+          "limits_list": [
+            1,
+            1024
+          ],
+          "param_name": "max_size",
+          "type": "num_interval"
+        },
+        {
+          "options_list": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "param_name": "interpolation",
+          "type": "radio"
+        }
+      ]
+}
