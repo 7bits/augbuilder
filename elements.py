@@ -30,23 +30,21 @@ def num_interval(current_choice, **params):
         limits_list[1] = state_dict['image_params']['width']
     
     step = 1
-
-    print(param_name,type(defaults))
     num_interval = st.sidebar.slider(param_name,int(limits_list[0]),int(limits_list[1]), int(defaults), step)
-    print(num_interval)
+
     return num_interval
 
 def radio(current_choice, **params):
     param_name =  params['param_name']
     options_list = params['options_list']
     result = st.sidebar.radio(param_name, options_list)
-    print(result)
+
     return result
 
 def rgb(current_choice, **params):
     param_name =  params['param_name']
-    rgb = st.sidebar.text_input(param_name)
-    print(rgb)
+    rgb = st.sidebar.text_input(param_name,1)
+
     return rgb
 
 
@@ -61,7 +59,6 @@ def checkbox(current_choice, **params):
     defaults = params['defaults']
     param_name =  params['param_name']
     result = st.sidebar.checkbox(defaults, param_name)
-    print(result)
     return result
 
 def setup_current_choice(current_choice, augmentations):
@@ -88,39 +85,3 @@ def setup_current_choice(current_choice, augmentations):
 def apply_changes(transforms):
     A.ReplayCompose(transforms)(image=state_dict['image'])
 
-def get_transormations_params(transform_names: list, augmentations: dict) -> list:
-    transforms = []
-    for i, transform_name in enumerate(transform_names):
-        # select the params values
-        st.sidebar.subheader("Params of the " + transform_name)
-        param_values = show_transform_control(transform_names)
-        transforms.append(getattr(A, transform_name)(**param_values))
-    return transforms
-    
-
-def show_transform_control(transform_params: dict) -> dict:
-
-    elements_type = {
-        'num_interval': num_interval,
-        'radio': radio,
-        'rgb': rgb,
-        'min_max': min_max,
-        'checkbox':checkbox,
-
-    }
-    param_values = {"p": 1.0}
-    if len(transform_params) == 0:
-        st.sidebar.text("Transform has no parameters")
-    else:
-        for param in transform_params:
-            print("efsd",param)
-            control_function = elements_type[param["type"]]
-            if isinstance(param["param_name"], list):
-                returned_values = control_function(**param)
-                for name, value in zip(param["param_name"], returned_values):
-                    param_values[name] = value
-            else:
-                param_values[param["param_name"]] = control_function(
-                    **param
-                )
-    return param_values
