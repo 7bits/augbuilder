@@ -43,3 +43,12 @@ def fill_placeholders(params: dict, placeholder_params: dict) -> dict:
                     params[k] = v
         params.pop("placeholder")
     return params
+
+def save_json(filename, data):
+    with open(filename, 'w') as fp:
+        json.dump(data, fp)
+
+def read_json(filename):
+    with open(filename, 'r') as fp:
+        data = json.load(fp)
+    return data

@@ -1,6 +1,7 @@
 import streamlit as st
 from state_dict import state_dict
 import albumentations as A
+import numpy as np
 
 def select_next_aug(augmentations):
     
@@ -16,9 +17,9 @@ def num_interval(current_choice, **params):
 
     defaults = params['defaults']
     if defaults == "image_half_height": 
-        defaults = state_dict['image_params']['height']/2
+        defaults = state_dict['image_params']['height']//2
     elif defaults == "image_half_width":
-        defaults = state_dict['image_params']['width']/2
+        defaults = state_dict['image_params']['width']//2
 
     param_name =  params['param_name']
     limits_list = params['limits_list']
@@ -30,7 +31,7 @@ def num_interval(current_choice, **params):
         limits_list[1] = state_dict['image_params']['width']
     
     step = 1
-    num_interval = st.sidebar.slider(param_name,int(limits_list[0]),int(limits_list[1]), int(defaults), step)
+    num_interval = st.sidebar.slider(param_name,limits_list[0],limits_list[1], defaults)
 
     return num_interval
 
@@ -43,9 +44,13 @@ def radio(current_choice, **params):
 
 def rgb(current_choice, **params):
     param_name =  params['param_name']
-    rgb = st.sidebar.text_input(param_name,1)
+    rgb = st.sidebar.text_input(param_name,0)
 
     return rgb
+
+def several_nums(current_choice, **params):
+    pass
+    #for i,j in zip(subparam_names,limits_list,defaults_list)
 
 
 def min_max(current_choice, **params):
@@ -69,19 +74,30 @@ def setup_current_choice(current_choice, augmentations):
         'rgb': rgb,
         'min_max': min_max,
         'checkbox':checkbox,
-
+        'several_nums': several_nums,
     }
-    transform_dict = {}
-    current_params = {}
-    st.sidebar.subheader('params for {0}'.format(current_choice))
-    for params in augmentations[current_choice]:
-        current_params.update({params['param_name'] : elements_type[params['type']](current_choice, **params)})
-        #transform_dict.update(current_choice)
-    #print(current_params)
+    if augmentations[current_choice] != []:
+        transform_dict = {}
+        current_params = {}
+        st.sidebar.subheader('params for {0}'.format(current_choice))
+        for params in augmentations[current_choice]:
+            current_params.update({params['param_name'] : elements_type[params['type']](current_choice, **params)})
     return current_params
 
-#код для работы с альбументацией
+def apply_changes(aug_dict, images):
+    if list(aug_dict.keys()) != []:
+        final_transform = []
+        temp = getattr(A,list(aug_dict.keys())[0])
+        for i in list(aug_dict.keys()):
+            current_dict = aug_dict[i]
+            print(current_dict)
+            final_transform.append(getattr(A,i)(**current_dict, always_apply=True))
 
-def apply_changes(transforms):
-    A.ReplayCompose(transforms)(image=state_dict['image'])
+        transform = A.ReplayCompose(final_transform)
+        
+        for im in images:
+            apply_transform = transform(image=np.array(im))
+            st.image(apply_transform['image'],caption = 'new')
+            
+
 
