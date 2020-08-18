@@ -5,7 +5,7 @@ import numpy as np
 from state_dict import state_dict, aug_dict
 import albumentations as A
 
-from elements import select_next_aug, num_interval, radio, rgb, checkbox, min_max, setup_current_choice, apply_changes
+from elements import select_next_aug, num_interval, radio, checkbox, min_max, setup_current_choice, apply_changes
 
 
 app_mode = st.sidebar.radio('Choose the app mode',
@@ -39,20 +39,21 @@ elif app_mode == 'Run augmentation':
     current_aug = select_next_aug(augmentations)
     if current_aug != []:
         current_choice = current_aug[-1]
-        aug_dict.update({current_choice : setup_current_choice(current_choice, augmentations)})
-    print(aug_dict)
+        if augmentations[current_choice]!= []:
+            res = setup_current_choice(current_choice, augmentations)
+            aug_dict.update({current_choice : res})
+        else: 
+            aug_dict.update({current_choice : None})
 
     for i in list(aug_dict.keys()):
         if current_aug != [] and i not in current_aug:
             aug_dict.pop(i)
-
+            
     images = [state_dict['image_array']] * 3
 
 
     image_display =   """
     <style>
-
-
     .block-container > div{
 
         width: 100% !important;

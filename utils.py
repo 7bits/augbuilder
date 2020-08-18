@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import json
+from state_dict import state_dict
 
 #code parts from albumentation project
 
@@ -52,3 +53,29 @@ def read_json(filename):
     with open(filename, 'r') as fp:
         data = json.load(fp)
     return data
+
+def default_check(default):
+    if default == "image_half_height": 
+        default = state_dict['image_params']['height']//2
+    elif default == "image_half_width":
+        default = state_dict['image_params']['width']//2
+    elif default == 'image_height':
+        default = state_dict['image_params']['height']
+    elif default == 'image_width':
+        default = state_dict['image_params']['width']
+    return default
+
+def all_defaults_check(defaults):
+    if isinstance(defaults, list):
+        defaults = [default_check(x) for x in defaults]
+    else:
+        defaults = default_check(defaults)
+    return defaults
+
+def limit_list_check(limits_list):
+    if limits_list[1] =='image_height':
+        limits_list[1] = state_dict['image_params']['height']
+
+    elif limits_list[1] == 'image_width':
+        limits_list[1] = state_dict['image_params']['width']
+    return limits_list

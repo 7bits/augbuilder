@@ -81,7 +81,7 @@
       ],
       "limits_list": [
         1,
-        3
+        2
       ],
       "param_name": "channel_drop_range",
       "type": "num_interval"
@@ -96,7 +96,17 @@
       "type": "num_interval"
     }
   ],
-  "ChannelShuffle": [],
+  "ChannelShuffle": [
+    {
+      "defaults": 0.5,
+      "limits_list": [
+        0.0,
+        1.0
+      ],
+      "param_name": "p",
+      "type": "num_interval"
+    }
+  ],
   "CoarseDropout": [
     {
       "defaults_list": [
