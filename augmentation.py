@@ -2,6 +2,7 @@ import albumentations
 import numpy as np
 import streamlit as st
 from PIL import Image
+
 from elements import checkbox, min_max, num_interval, radio, rgb, several_nums
 from state_dict import state_dict
 
@@ -38,8 +39,7 @@ def apply_changes(aug_dict, images):
                 final_transform.append(transform(always_apply=True))
         transform = albumentations.ReplayCompose(final_transform)
         
-        st.image(images[0])
-        for im in images[1:]:
+        for im in images:
             apply_transform = transform(image=np.array(im))
             st.image(apply_transform['image'])
 
@@ -79,4 +79,3 @@ def uploader():
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
         state_dict.update({'image': image, 'image_array': np.array(image)})
-        st.image(image, caption='Uploaded Image.')
