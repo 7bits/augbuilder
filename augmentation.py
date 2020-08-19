@@ -1,8 +1,9 @@
 import albumentations
 import numpy as np
 import streamlit as st
-
+from PIL import Image
 from elements import checkbox, min_max, num_interval, radio, rgb, several_nums
+from state_dict import state_dict
 
 
 def select_next_aug(augmentations):
@@ -68,3 +69,14 @@ def setup_current_choice(current_choice, augmentations):
                 res = elements_type[params['type']](current_choice, **params)
                 current_params.update({params['param_name']: res})
     return current_params
+
+
+def uploader():
+    # warning about changes in loader behavior till 2020.08.15
+    show_error = False
+    st.set_option('deprecation.showfileUploaderEncoding', show_error)
+    uploaded_file = st.file_uploader('Upload file', type=['png', 'jpg', 'jpeg'])
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        state_dict.update({'image': image, 'image_array': np.array(image)})
+        st.image(image, caption='Uploaded Image.')

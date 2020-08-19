@@ -1,9 +1,11 @@
-import numpy as np
 import streamlit as st
-from PIL import Image
-
 from additional_utils import load_augmentations_config, read_json, save_json
-from augmentation import apply_changes, select_next_aug, setup_current_choice
+from augmentation import (
+    apply_changes,
+    select_next_aug,
+    setup_current_choice,
+    uploader,
+)
 from state_dict import aug_dict, state_dict
 
 app_mode = st.sidebar.radio(
@@ -11,23 +13,20 @@ app_mode = st.sidebar.radio(
     ['Upload an image', 'Select file', 'Run augmentation'],
 )
 
-if app_mode == 'Upload an image':
-    # warning about changes in loader behavior till 2020.08.15
-    show_error = False
-    st.set_option('deprecation.showfileUploaderEncoding', show_error)
-    uploaded_file = st.file_uploader('Upload file', type=['png', 'jpg', 'jpeg'])
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        state_dict.update({'image': image, 'image_array': np.array(image)})
-        st.image(image, caption='Uploaded Image.')
+if app_mode == 'Upload an image':  # noqa: C901
+    uploader()
 
 elif app_mode == 'Select file':
     if 'image' in list(state_dict.keys()):
+        st.write(
+            'Now you can only use this downloader' +
+            'to see, how your saved augmentation works',
+        )
         setting_path = st.text_input(
             'Enter filename to read settings and press enter',
         )
-        if st.button('Open file'):
-            aug_dict = read_json(setting_path)
+        if st.button('Open file') and setting_path:
+            aug_dict.update(read_json(setting_path))
     else:
         st.write('please, upload any image')
 
@@ -40,6 +39,7 @@ elif app_mode == 'Run augmentation':
         state_dict.update({'image_params': image_params})
 
         augmentations = load_augmentations_config(image_params)
+        
         current_aug = select_next_aug(augmentations)
         if current_aug:
             current_choice = current_aug[-1]
