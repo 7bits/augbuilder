@@ -1,14 +1,13 @@
 stages:
-  - deploy
   - Static Analysys
+  - deploy
 
 staging:
+  image: "ruby:2.7"
   stage: deploy
   only:
     - master
   script:
-    - apt-get update -qy
-    - apt-get install -y ruby-dev
     - gem install dpl
     - dpl --provider=heroku --app=augbuilder --api-key=$HEROKU_STAGING_API_KEY
 
