@@ -3,37 +3,41 @@ import streamlit as st
 from additional_utils import all_defaults_check, limit_list_check
 
 
-def num_interval(current_choice, **params):
+def num_interval(current_choice, session_state, **params):
 
     defaults = all_defaults_check(params['defaults'])
     param_name = params['param_name']
     limits_list = limit_list_check(params['limits_list'])
+    element_key = hash(param_name + current_choice + str(session_state))
     return st.sidebar.slider(
         param_name,
         limits_list[0],
         limits_list[1],
         defaults,
-        key=hash(param_name + current_choice),
+        key=element_key,
     )
 
 
-def radio(current_choice, **params):
+def radio(current_choice, session_state, **params):
     param_name = params['param_name']
     options_list = params['options_list']
-    result = st.sidebar.radio(param_name, options_list)
+    element_key = hash(param_name + current_choice + str(session_state))
+    result = st.sidebar.radio(param_name, options_list, key=element_key)
     if result == 'None':
         result = None
     return result
 
 
-def rgb(current_choice, **params):
+def rgb(current_choice, session_state, **params):
     rgb_result = []
-    for i in 'rgb':
-        rgb_result.append(int(st.sidebar.text_input(i, 0)))
+    colors = ['red', 'green', 'blue']
+    element_key = hash(current_choice + str(session_state))
+    for i in colors:
+        rgb_result.append(int(st.sidebar.text_input(i, 0, key=element_key)))
     return rgb_result
 
 
-def several_nums(current_choice, **params):
+def several_nums(current_choice, session_state, **params):
     defaults = all_defaults_check(params['defaults_list'])
     limits_list = params['limits_list']
     subparam_names = params['subparam_names']
@@ -44,11 +48,11 @@ def several_nums(current_choice, **params):
             'param_name': j,
             'limits_list': limits_list[i],
         }
-        return_list.append(num_interval(j, **new_par))
+        return_list.append(num_interval(j, session_state, **new_par))
     return return_list
 
 
-def min_max(current_choice, **params):
+def min_max(current_choice, session_state, **params):
     min_diff = 0
     if 'min_diff' in params:
         min_diff = params.get('min_diff')
@@ -64,7 +68,7 @@ def min_max(current_choice, **params):
     }
     result = list(
         num_interval(
-            param_name, **new_params,
+            param_name, session_state, **new_params,
         ),
     )
     min_val = result[0]
@@ -80,11 +84,12 @@ def min_max(current_choice, **params):
     return result
 
 
-def checkbox(current_choice, **params):
+def checkbox(current_choice, session_state, **params):
     defaults = all_defaults_check(params['defaults'])
     if defaults == 1:
         defaults = True
     elif defaults == 0:
         defaults = False 
     param_name = params['param_name']
-    return st.sidebar.checkbox(param_name, defaults)
+    element_key = hash(param_name + current_choice + str(session_state))
+    return st.sidebar.checkbox(param_name, defaults, key=element_key)

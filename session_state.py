@@ -23,7 +23,7 @@ from streamlit.server.server import Server
 
 
 class SessionState(object):
-    """Stores current session state settings."""
+    """Store current session state settings."""
 
     def __init__(self, **kwargs):
         """
@@ -46,9 +46,9 @@ class SessionState(object):
 
 def get(**kwargs):
     """
-    Gets a SessionState object for the current session.
+    Get a SessionState object for the current session.
 
-    Creates a new object if necessary.
+    Create a new object if necessary.
 
     Parameters:
         **kwargs : Default values you want to add to the session state
