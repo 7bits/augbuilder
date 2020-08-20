@@ -44,7 +44,7 @@ def apply_changes(aug_dict, images):
             st.image(apply_transform['image'])
 
 
-def setup_current_choice(current_choice, augmentations):
+def setup_current_choice(current_choice, augmentations, session_state):
     elements_type = {
         'num_interval': num_interval,
         'radio': radio,
@@ -60,13 +60,18 @@ def setup_current_choice(current_choice, augmentations):
             if isinstance(params['param_name'], list):
                 res = elements_type[params['type']](
                     params['param_name'],
+                    session_state,
                     **params,
                 )
                 for i, subparams in enumerate(params['param_name']):
                     current_params.update({subparams: res[i]})
 
             else:
-                res = elements_type[params['type']](current_choice, **params)
+                res = elements_type[params['type']](
+                    current_choice,
+                    session_state,
+                    **params,
+                )
                 current_params.update({params['param_name']: res})
     return current_params
 
@@ -77,5 +82,5 @@ def uploader():
     st.set_option('deprecation.showfileUploaderEncoding', show_error)
     uploaded_file = st.file_uploader('Upload file', type=['png', 'jpg', 'jpeg'])
     if uploaded_file is not None:
-        image = Image.open(uploaded_file)
+        image = Image.open(uploaded_file).convert('RGB')
         state_dict.update({'image': image, 'image_array': np.array(image)})

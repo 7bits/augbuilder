@@ -7,10 +7,12 @@ from augmentation import (
     setup_current_choice,
     uploader,
 )
-from state_dict import aug_dict, state_dict
+from session_state import get
+from state_dict import aug_dict, clear_dict, state_dict
 
+session_state = get()
+clear_dict(session_state)
 uploader()
-
 
 if 'image' in list(state_dict.keys()):  # noqa: C901
     st.image(state_dict['image'])
@@ -25,13 +27,18 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
     current_aug = select_next_aug(augmentations)
 
     if current_aug:
-        current_choice = current_aug[-1]
+        for i in current_aug:
+            current_choice = i
 
-        if augmentations[current_choice]:
-            res = setup_current_choice(current_choice, augmentations)
-            aug_dict.update({current_choice: res})
-        else:
-            aug_dict.update({current_choice: None})
+            if augmentations[current_choice]:
+                res = setup_current_choice(
+                    current_choice,
+                    augmentations,
+                    session_state,
+                )
+                aug_dict.update({current_choice: res})
+            else:
+                aug_dict.update({current_choice: None})
 
     for keys in list(aug_dict.keys()):
         if current_aug and keys not in current_aug:
@@ -40,14 +47,15 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
 
     image_display = """
     <style>
+
     .main .block-container > div{
 
-        width: 120% !important;
+        width: 130% !important;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
     }
-
+    
     .main .element-container:nth-child(3),
     .main .element-container:nth-child(4){
         width: 0% !important;
