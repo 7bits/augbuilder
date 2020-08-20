@@ -7,10 +7,12 @@ from augmentation import (
     setup_current_choice,
     uploader,
 )
-from state_dict import aug_dict, state_dict
+from session_state import get
+from state_dict import aug_dict, clear_dict, state_dict
 
+session_state = get()
+clear_dict(session_state)
 uploader()
-
 
 if 'image' in list(state_dict.keys()):  # noqa: C901
     st.image(state_dict['image'])
