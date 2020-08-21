@@ -9,8 +9,8 @@ from state_dict import aug_dict, clear_dict, oneof_dict, state_dict
 session_state = get()
 clear_dict(session_state)
 uploader()
-
 if 'image' in list(state_dict.keys()):  # noqa: C901
+
     st.image(state_dict['image'])
     image_params = {
         'width': state_dict['image_array'].shape[1],
