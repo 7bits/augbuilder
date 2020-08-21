@@ -1,7 +1,7 @@
 import numpy as np
 import streamlit as st
 
-from additional_utils import load_augmentations_config, save_json
+from additional_utils import load_augmentations_config
 from augmentation import apply_changes, dict_update, select_next_aug, uploader
 from session_state import get
 from state_dict import aug_dict, clear_dict, oneof_dict, state_dict
@@ -102,7 +102,17 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
         for im in images:
             apply_transform = final_results(image=np.array(im))
             st.image(apply_transform['image'])
+        st.header('Current settings list:')
+        result_text = ''
+        for augm in list(aug_dict.keys()):
+            
+            result_text += '{0}:\n'.format(augm)
+            key_result = ''
+            if aug_dict[augm]:
+                for elem in aug_dict[augm]:  # noqa: WPS528
+                    str_temp = '\t{0}: {1}\n'.format(elem, aug_dict[augm][elem])
+                    key_result += str_temp
+            result_text += key_result
 
-    save_path = st.sidebar.text_input('Enter filename to save')
-    if st.sidebar.button('Save in json file'):
-        save_json(save_path, aug_dict)
+        st.text(result_text)
+    st.sidebar.button('refresh images')

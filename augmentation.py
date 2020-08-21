@@ -33,7 +33,6 @@ def apply_changes(aug_dict, apply_relaycompose=True):
     all_keys = list(aug_dict.keys())
     
     if all_keys:
-
         transform = []
         for i in all_keys:
             current_dict = aug_dict[i]
