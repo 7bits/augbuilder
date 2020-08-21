@@ -2,15 +2,9 @@ import numpy as np
 import streamlit as st
 
 from additional_utils import load_augmentations_config, save_json
-from augmentation import (
-    apply_changes,
-    select_next_aug,
-    setup_current_choice,
-    uploader,
-    dict_update,
-)
+from augmentation import apply_changes, dict_update, select_next_aug, uploader
 from session_state import get
-from state_dict import aug_dict, clear_dict, state_dict, oneof_dict
+from state_dict import aug_dict, clear_dict, oneof_dict, state_dict
 
 session_state = get()
 clear_dict(session_state)
@@ -36,14 +30,24 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
             current_choice = i
 
             transorm_check = i not in oneof
-            augg = None
-            if  transorm_check and augmentations[current_choice]:
+            aug = None
+            if transorm_check and augmentations[current_choice]:
                 aug = augmentations[current_choice]
 
             if transorm_check and not oneof_flag:
-                aug_dict.update({current_choice: dict_update(aug, current_choice, augmentations, session_state)})
+                aug_dict.update({current_choice: dict_update(
+                    aug,
+                    current_choice,
+                    augmentations,
+                    session_state,
+                )})
             elif transorm_check and oneof_flag:
-                oneof_dict.update({current_choice: dict_update(aug, current_choice, augmentations, session_state)})
+                oneof_dict.update({current_choice: dict_update(
+                    aug,
+                    current_choice,
+                    augmentations,
+                    session_state,
+                )})
             elif i == oneof[0]:
                 oneof_flag = True
             elif i == oneof[1]:

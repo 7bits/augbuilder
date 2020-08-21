@@ -6,6 +6,7 @@ from PIL import Image
 from elements import checkbox, min_max, num_interval, radio, rgb, several_nums
 from state_dict import state_dict
 
+
 def select_next_aug(augmentations):
     
     oneof_list = [['OneOf'], ['StopOneOf']]
@@ -108,9 +109,8 @@ def dict_update(
     session_state,
 ):
     if aug:
-        res = setup_current_choice(
+        return setup_current_choice(
             current_choice,
             augmentations,
             session_state,
         )
-        return res
