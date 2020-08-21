@@ -1,5 +1,6 @@
 state_dict = {}
 aug_dict = {}
+oneof_dict = {}
 
 
 def clear_dict(state):

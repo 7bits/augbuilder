@@ -6,10 +6,12 @@ from PIL import Image
 from elements import checkbox, min_max, num_interval, radio, rgb, several_nums
 from state_dict import state_dict
 
-
 def select_next_aug(augmentations):
     
-    selection = ['None'] + list(augmentations.keys())
+    oneof_list = [['OneOf'], ['StopOneOf']]
+    oneof = ['OneOf', 'StopOneOf']
+    default_selection = list(augmentations.keys())
+    selection = ['None'] + oneof_list[0] + default_selection
     selected_aug = [
         st.sidebar.selectbox('select transformation 1: ', selection),
     ]
@@ -19,29 +21,42 @@ def select_next_aug(augmentations):
         select_string = 'select transformation {0}: '.format(
             transformation_number,
         )
+        if selected_aug[-1] in oneof:
+            selection = ['None'] + oneof_list[1] + default_selection
         selected_aug.append(st.sidebar.selectbox(select_string, selection))
     
     return selected_aug[:-1]
 
 
-def apply_changes(aug_dict, images):
-    if list(aug_dict.keys()):
-        final_transform = []
-        for i in list(aug_dict.keys()):
+def apply_changes(aug_dict, apply_relaycompose=True):
+    all_keys = list(aug_dict.keys())
+    
+    if all_keys:
+
+        transform = []
+        for i in all_keys:
             current_dict = aug_dict[i]
-            transform = getattr(albumentations, i)
             if current_dict is not None:
-                final_transform.append(transform(
-                    **current_dict,
-                    always_apply=True,
-                ))
-            else: 
-                final_transform.append(transform(always_apply=True))
-        transform = albumentations.ReplayCompose(final_transform)
-        
-        for im in images:
-            apply_transform = transform(image=np.array(im))
-            st.image(apply_transform['image'])
+                transform = add_transformation(transform, i, **current_dict)
+            else:
+                transform = add_transformation(transform, i)
+        if apply_relaycompose:
+            transform = albumentations.ReplayCompose(transform)
+        return transform
+
+
+def add_transformation(final_transform, curr_transf, **current_dict):
+    transform = getattr(albumentations, curr_transf)
+    if current_dict is not None:
+        if curr_transf == 'OneOf':
+            apply_relay = False
+            current_dict = apply_changes(current_dict, apply_relay)
+            final_transform.append(transform(current_dict))
+        else:
+            final_transform.append(transform(**current_dict))
+    else: 
+        final_transform.append(transform())
+    return final_transform
 
 
 def setup_current_choice(current_choice, augmentations, session_state):
@@ -53,8 +68,8 @@ def setup_current_choice(current_choice, augmentations, session_state):
         'checkbox': checkbox,
         'several_nums': several_nums,
     }
+    current_params = {}
     if augmentations[current_choice]:
-        current_params = {}
         st.sidebar.subheader('params for {0}'.format(current_choice))
         for params in augmentations[current_choice]:
             if isinstance(params['param_name'], list):
@@ -84,3 +99,18 @@ def uploader():
     if uploaded_file is not None:
         image = Image.open(uploaded_file).convert('RGB')
         state_dict.update({'image': image, 'image_array': np.array(image)})
+
+
+def dict_update(
+    aug,
+    current_choice,
+    augmentations,
+    session_state,
+):
+    if aug:
+        res = setup_current_choice(
+            current_choice,
+            augmentations,
+            session_state,
+        )
+        return res
