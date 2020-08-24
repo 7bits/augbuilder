@@ -7,25 +7,48 @@ from elements import checkbox, min_max, num_interval, radio, rgb, several_nums
 from state_dict import state_dict
 
 
-def select_next_aug(augmentations):
+def select_next_aug(augmentations, chosen_aug=None):
     
     oneof_list = [['OneOf'], ['StopOneOf']]
     oneof = ['OneOf', 'StopOneOf']
     default_selection = list(augmentations.keys())
     selection = ['None'] + oneof_list[0] + default_selection
-    selected_aug = [
-        st.sidebar.selectbox('select transformation 1: ', selection),
-    ]
 
-    while (selected_aug[-1] != 'None'):
-        transformation_number = len(selected_aug) + 1
-        select_string = 'select transformation {0}: '.format(
-            transformation_number,
-        )
-        if selected_aug[-1] in oneof:
-            selection = ['None'] + oneof_list[1] + default_selection
-        selected_aug.append(st.sidebar.selectbox(select_string, selection))
-    
+    #selected_aug = [
+    #    st.sidebar.selectbox('select transformation 1: ', selection),
+    #]
+
+    # while (selected_aug[-1] != 'None'):
+    #     transformation_number = len(selected_aug) + 1
+    #     select_string = 'select transformation {0}: '.format(
+    #         transformation_number,
+    #     )
+    #     if selected_aug[-1] == oneof[1]:
+    #         selection = ['None'] + oneof_list[1] + default_selection
+    #     selected_aug.append(st.sidebar.selectbox(select_string, selection))
+
+    selected_copy = chosen_aug
+    print(selected_copy)
+    selected_aug = [
+       st.sidebar.selectbox('select transformation 1: ', selection),
+    ]
+    if selected_copy and len(selected_copy) >= len(selected_aug):
+        print("!!!")
+        pass
+    else:
+        while (selected_aug[-1] != 'None'):
+            transformation_number = len(selected_aug) + 1
+            select_string = 'select transformation {0}: '.format(
+                transformation_number,
+            )
+            if selected_aug[-1] == oneof[1]:
+                selection = ['None'] + oneof_list[1] + default_selection
+            selected_aug.append(st.sidebar.selectbox(select_string, selection))
+
+        
+
+
+     
     return selected_aug[:-1]
 
 

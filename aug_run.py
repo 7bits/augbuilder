@@ -3,6 +3,7 @@ import streamlit as st
 
 from additional_utils import load_augmentations_config
 from augmentation import apply_changes, dict_update, select_next_aug, uploader
+from layout import return_layout
 from session_state import get
 from state_dict import aug_dict, clear_dict, oneof_dict, state_dict
 
@@ -55,46 +56,22 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
                 aug_dict.update({'OneOf': oneof_dict.copy()})
                 oneof_dict.clear()
 
+    delete_first = True
+    
     for keys in list(aug_dict.keys()):
-        if current_aug and keys not in current_aug:
-            aug_dict.pop(keys)
+        if current_aug and keys not in current_aug and delete_first:
+            if delete_first:
+                aug_dict.pop(keys)
+                delete_first = False
+
+    if not delete_first:
+        select_next_aug(augmentations, list(aug_dict.keys()))
+        delete_first = True
+
     images = [state_dict['image_array'] for i in range(9)]
 
-    image_display = """
-    <style>
+    image_display = return_layout()
 
-    .main .block-container > div{
-
-        width: 130% !important;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-    
-    .main .element-container:nth-child(3),
-    .main .element-container:nth-child(4){
-        width: 0% !important;
-    } 
-
-    .main .element-container:nth-child(5),
-    .main .element-container:nth-child(6),
-    .main .element-container:nth-child(7),
-    .main .element-container:nth-child(8),
-    .main .element-container:nth-child(9),
-    .main .element-container:nth-child(10),
-    .main .element-container:nth-child(11),
-    .main .element-container:nth-child(12),
-    .main .element-container:nth-child(13){
-        width: 33% !important;
-        height: 33% !important;
-    }
-    
-    .main .stImage > img{
-        width: 40% !important;
-    }
-
-    </style>
-    """
     st.markdown(image_display, unsafe_allow_html=True)
 
     final_results = apply_changes(aug_dict)
@@ -109,7 +86,7 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
             result_text += '{0}:\n'.format(augm)
             key_result = ''
             if aug_dict[augm]:
-                for elem in aug_dict[augm]:  # noqa: WPS528
+                for elem in aug_dict[augm]:
                     str_temp = '\t{0}: {1}\n'.format(elem, aug_dict[augm][elem])
                     key_result += str_temp
             result_text += key_result
