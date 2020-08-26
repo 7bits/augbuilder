@@ -4,61 +4,48 @@ import streamlit as st
 from PIL import Image
 
 from elements import checkbox, min_max, num_interval, radio, rgb, several_nums
-from state_dict import state_dict
+from state_dict import aug_dict, state_dict
 
 
-def select_next_aug(augmentations, chosen_aug=None):
+def select_next_aug(augmentations):
     
     oneof_list = [['OneOf'], ['StopOneOf']]
     oneof = ['OneOf', 'StopOneOf']
     default_selection = list(augmentations.keys())
     selection = ['None'] + oneof_list[0] + default_selection
-
-    #selected_aug = [
-    #    st.sidebar.selectbox('select transformation 1: ', selection),
-    #]
-
-    # while (selected_aug[-1] != 'None'):
-    #     transformation_number = len(selected_aug) + 1
-    #     select_string = 'select transformation {0}: '.format(
-    #         transformation_number,
-    #     )
-    #     if selected_aug[-1] == oneof[1]:
-    #         selection = ['None'] + oneof_list[1] + default_selection
-    #     selected_aug.append(st.sidebar.selectbox(select_string, selection))
-
-    selected_copy = chosen_aug
-    print(selected_copy)
     selected_aug = [
-       st.sidebar.selectbox('select transformation 1: ', selection),
+        st.sidebar.selectbox('select transformation 1: ', selection),
     ]
-    if selected_copy and len(selected_copy) >= len(selected_aug):
-        print("!!!")
-        pass
-    else:
-        while (selected_aug[-1] != 'None'):
-            transformation_number = len(selected_aug) + 1
-            select_string = 'select transformation {0}: '.format(
-                transformation_number,
-            )
-            if selected_aug[-1] == oneof[1]:
-                selection = ['None'] + oneof_list[1] + default_selection
-            selected_aug.append(st.sidebar.selectbox(select_string, selection))
 
+    while (selected_aug[-1] != 'None'):
+        transformation_number = len(selected_aug) + 1
+        select_string = 'select transformation {0}: '.format(
+            transformation_number,
+        )
         
+        current_aug = selected_aug[-1] 
+        if current_aug == oneof[0]:
+            oneof_ind = selection.index(oneof[0])
+            selection[oneof_ind] = oneof[1]
+        elif current_aug == oneof[1]: 
+            stoponeof_ind = selection.index(oneof[1])
+            selection[stoponeof_ind] = oneof[0]
 
+        if selected_aug and current_aug not in oneof:
+            selection.remove(current_aug)
 
-     
+        selected_aug.append(st.sidebar.selectbox(select_string, selection))
+    
     return selected_aug[:-1]
 
 
-def apply_changes(aug_dict, apply_relaycompose=True):
-    all_keys = list(aug_dict.keys())
+def apply_changes(augment_dict, apply_relaycompose=True):
+    all_keys = list(augment_dict.keys())
     
     if all_keys:
         transform = []
         for i in all_keys:
-            current_dict = aug_dict[i]
+            current_dict = augment_dict[i]
             if current_dict is not None:
                 transform = add_transformation(transform, i, **current_dict)
             else:
@@ -136,3 +123,19 @@ def dict_update(
             augmentations,
             session_state,
         )
+
+
+def build_string():
+    result_text = ''
+    for augm in list(aug_dict.keys()):             
+        result_text += '{0}:\n'.format(augm)
+        key_result = ''
+        if aug_dict[augm]:
+            for elem in aug_dict[augm]:  # noqa: WPS528
+                str_temp = '\t{0}: {1}\n'.format(
+                    elem,
+                    aug_dict[augm][elem],
+                )
+                key_result += str_temp
+        result_text += key_result
+    return result_text
