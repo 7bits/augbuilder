@@ -31,9 +31,15 @@ def radio(current_choice, session_state, **params):
 def rgb(current_choice, session_state, **params):
     rgb_result = []
     colors = ['red', 'green', 'blue']
+    max_color = 255
     element_key = hash(current_choice + str(session_state))
     for i in colors:
-        rgb_result.append(int(st.sidebar.text_input(i, 0, key=element_key)))
+        rgb_result.append(int(st.sidebar.slider(
+            i,
+            0,
+            max_color,
+            key=element_key,
+        )))
     return rgb_result
 
 
