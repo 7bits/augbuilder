@@ -1,7 +1,7 @@
 all: lint 
 
 run:
-	streamlit run aug_run.py
+	streamlit run augbuilder/aug_run.py
 
 lint:
 	python -m isort -y
@@ -15,4 +15,10 @@ install:
 install-dev:
 	pip3 install -r requirements_lint.txt
 
+.PHONY: dist
+dist:
+	python setup.py sdist
 
+.PHONY: deploy
+deploy:
+	twine upload dist/*
