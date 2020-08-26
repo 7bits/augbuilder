@@ -47,7 +47,7 @@ def fill_placeholders(  # noqa: C901, WPS231
         placeholder_dict = params.get('placeholder')
         for k, v in placeholder_dict.items():
             if isinstance(v, list):
-                params[k] = []  # noqa: WPS204 
+                params[k] = []  # noqa: WPS204
                 for element in v:
                     if element in placeholder_params:
                         params[k].append(  # noqa: WPS220

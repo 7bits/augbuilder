@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import streamlit as st
 
@@ -13,6 +15,9 @@ from layout import return_layout
 from session_state import get
 from state_dict import aug_dict, clear_dict, oneof_dict, state_dict
 
+root_path = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(root_path, 'augmentation.json')
+
 session_state = get()
 clear_dict(session_state)
 uploader()
@@ -25,10 +30,10 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
     }
     state_dict.update({'image_params': image_params})
 
-    augmentations = load_augmentations_config(image_params)
-        
+    augmentations = load_augmentations_config(image_params, config_path)
+
     current_aug = select_next_aug(augmentations)
-    
+
     oneof_flag = False
 
     if current_aug:
@@ -84,7 +89,7 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
                 except ValueError:
                     error = 1
                     st.title(
-                        "Can't apply transformation. Check image " + 
+                        "Can't apply transformation. Check image " +
                         'size in crop transformation.',
                     )
             if error == 0:
