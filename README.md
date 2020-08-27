@@ -1,6 +1,8 @@
 # AugBuilder
 
-A No-code solution to create the **images transformation pipelin**.
+[![PyPI version](https://badge.fury.io/py/augbuilder.svg)](https://badge.fury.io/py/augbuilder)
+
+**A No-code solution to create the images transformation pipelin.**
 
 - Installed as a pip package.
 - Runs in a browser.
@@ -8,7 +10,7 @@ A No-code solution to create the **images transformation pipelin**.
 - **Benchmarks** the pipeline.
 - Generates a YAML config and a tiny chunk of python code to **integrate with PyTorch** code.
 
-![Interface image](docs/images/screenshot_1.png)
+![Interface image](https://raw.githubusercontent.com/7bits/augbuilder/master/docs/images/screenshot_1.png)
 
 > Powered by [Albumentations](https://albumentations.ai/) and [Streamlit](https://streamlit.io/).
 
@@ -34,7 +36,7 @@ To stop the application press the `ctrl+c` combination in the terminal.
 
 Watch this demo video of usage.
 
-[![youtube video](docs/images/video_preview.png)](https://youtu.be/SVppY2Kobm0)
+[![youtube video](https://raw.githubusercontent.com/7bits/augbuilder/master/docs/images/video_preview.png)](https://youtu.be/SVppY2Kobm0)
 
 1. Drop an image to the upload area.
 2. Use dropdown on left side to select transformations.
