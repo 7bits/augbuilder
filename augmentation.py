@@ -139,3 +139,4 @@ def build_string():
                 key_result += str_temp
         result_text += key_result
     return result_text
+

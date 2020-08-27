@@ -22,7 +22,37 @@ def radio(current_choice, session_state, **params):
     param_name = params['param_name']
     options_list = params['options_list']
     element_key = hash(param_name + current_choice + str(session_state))
-    result = st.sidebar.radio(param_name, options_list, key=element_key)
+    if param_name == 'interpolation':
+        param_interpolation = {
+            'INTER_NEAREST': 0, 
+            'INTER_LINEAR': 1,
+            'INTER_AREA': 2,
+            'INTER_CUBIC': 3,
+            'INTER_LANCZOS4': 4,
+        } 
+        selected_result = st.sidebar.radio(
+            param_name,
+            list(param_interpolation.keys()),
+            key=element_key,
+        )
+        result = param_interpolation[selected_result]
+    elif param_name == 'border_mode':
+        param_border = {
+            'BORDER_CONSTANT': 0, 
+            'BORDER_REPLICATE': 1,
+            'BORDER_REFLECT': 2,
+            'BORDER_WRAP': 3,
+            'BORDER_REFLECT_101': 4,
+        } 
+        selected_result = st.sidebar.radio(
+            param_name,
+            list(param_border.keys()),
+            key=element_key,
+        )
+        result = param_border[selected_result]
+    else:
+        result = st.sidebar.radio(param_name, options_list, key=element_key)
+        
     if result == 'None':
         result = None
     return result
