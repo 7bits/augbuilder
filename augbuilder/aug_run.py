@@ -1,3 +1,4 @@
+import os
 import uuid
 
 import numpy as np
@@ -16,11 +17,14 @@ from session_state import get
 from state_dict import aug_dict, clear_dict, oneof_dict, state_dict
 
 session_state = get(id=uuid.uuid4())
+root_path = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(root_path, 'augmentation.json')
+
 clear_dict(session_state)
 uploader()
 st.text('Upload an image, then select transformation from the\
 list.\nTo apply OneOf use OneOf at the beginning and StopOneOf\
-to close it.')
+ to close it.')
 
 if 'image' in list(state_dict.keys()):  # noqa: C901
     st.image(state_dict['image'])
@@ -30,10 +34,10 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
     }
     state_dict.update({'image_params': image_params})
 
-    augmentations = load_augmentations_config(image_params)
-        
+    augmentations = load_augmentations_config(image_params, config_path)
+
     current_aug = select_next_aug(augmentations)
-    
+
     oneof_flag = False
 
     if current_aug:
