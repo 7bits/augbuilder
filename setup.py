@@ -22,7 +22,7 @@ def get_requirements():
 
 setuptools.setup(
     name='augbuilder',
-    version='0.0.2',
+    version='0.0.3',
     author='7bits',
     author_email='aloha@7bits.it',
     description='A No-code solution to create the images transformation pipeline.',  # noqa: E501
