@@ -14,6 +14,13 @@
 
 > Powered by [Albumentations](https://albumentations.ai/) and [Streamlit](https://streamlit.io/).
 
+## WIP
+
+Work still in progress.
+We'll appreciate any feedback from the community: bug-report, feature-request, pull-request.
+
+You can leave [anonimous feedback here](https://forms.gle/VGkYs4fiLWDexBGV9).
+
 ## Installation
 
 You need python 3.6+ and [pip](https://pip.pypa.io/en/stable/installing/) to install the app.
