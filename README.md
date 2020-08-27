@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/augbuilder.svg)](https://badge.fury.io/py/augbuilder)
 
-**A No-code solution to create the images transformation pipelin.**
+**A No-code solution to create the images transformation pipeline.**
 
 - Installed as a pip package.
 - Runs in a browser.
@@ -16,7 +16,8 @@
 
 ## WIP
 
-Work still in progress.
+**Work still in progress.**
+
 We'll appreciate any feedback from the community: bug-report, feature-request, pull-request.
 
 You can leave [anonimous feedback here](https://forms.gle/VGkYs4fiLWDexBGV9).
