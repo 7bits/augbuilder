@@ -1,4 +1,5 @@
 import os
+import uuid
 
 import numpy as np
 import streamlit as st
@@ -15,14 +16,17 @@ from layout import return_layout
 from session_state import get
 from state_dict import aug_dict, clear_dict, oneof_dict, state_dict
 
+session_state = get(id=uuid.uuid4())
 root_path = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(root_path, 'augmentation.json')
 
-session_state = get()
 clear_dict(session_state)
 uploader()
-if 'image' in list(state_dict.keys()):  # noqa: C901
+st.text('Upload an image, then select transformation from the\
+list.\nTo apply OneOf use OneOf at the beginning and StopOneOf\
+ to close it.')
 
+if 'image' in list(state_dict.keys()):  # noqa: C901
     st.image(state_dict['image'])
     image_params = {
         'width': state_dict['image_array'].shape[1],
@@ -66,7 +70,8 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
                 oneof_flag = True
             elif i == oneof[1]:
                 oneof_flag = False
-                aug_dict.update({'OneOf': oneof_dict.copy()})
+                if current_aug.index(i) - current_aug.index(oneof[0]) > 1:
+                    aug_dict.update({'OneOf': oneof_dict.copy()})
                 oneof_dict.clear()
 
     for keys in list(aug_dict.keys()):
@@ -89,7 +94,7 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
                 except ValueError:
                     error = 1
                     st.title(
-                        "Can't apply transformation. Check image " +
+                        "Can't apply transformation. Check image " + 
                         'size in crop transformation.',
                     )
             if error == 0:

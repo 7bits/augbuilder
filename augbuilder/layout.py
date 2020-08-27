@@ -11,12 +11,12 @@ def return_layout():
         flex-wrap: wrap;
     }
     
-    .main .element-container:nth-child(3),
+    .main .element-container:nth-child(5),
     .main .element-container:nth-child(4){
         width: 0% !important;
     } 
 
-    .main .element-container:nth-child(5),
+   
     .main .element-container:nth-child(6),
     .main .element-container:nth-child(7),
     .main .element-container:nth-child(8),
@@ -24,7 +24,8 @@ def return_layout():
     .main .element-container:nth-child(10),
     .main .element-container:nth-child(11),
     .main .element-container:nth-child(12),
-    .main .element-container:nth-child(13){
+    .main .element-container:nth-child(13),
+     .main .element-container:nth-child(14){
         width: 33% !important;
         height: 33% !important;
     }
