@@ -39,7 +39,7 @@ def select_next_aug(augmentations):
     return selected_aug[:-1]
 
 
-def apply_changes(augment_dict, apply_relaycompose=True):
+def apply_changes(augment_dict, apply_replaycompose=True):
     all_keys = list(augment_dict.keys())
     
     if all_keys:
@@ -50,7 +50,7 @@ def apply_changes(augment_dict, apply_relaycompose=True):
                 transform = add_transformation(transform, i, **current_dict)
             else:
                 transform = add_transformation(transform, i)
-        if apply_relaycompose:
+        if apply_replaycompose:
             transform = albumentations.ReplayCompose(transform)
         return transform
 
@@ -139,3 +139,11 @@ def build_string():
                 key_result += str_temp
         result_text += key_result
     return result_text
+
+
+def build_code():
+    transformations = str(apply_changes(aug_dict))
+
+    return 'transformations = albumentations.{tf}'.format(
+        tf=transformations,
+    )
