@@ -3,7 +3,15 @@ import numpy as np
 import streamlit as st
 from PIL import Image
 
-from elements import checkbox, min_max, num_interval, radio, rgb, several_nums, text_input
+from elements import (
+    checkbox,
+    min_max,
+    num_interval,
+    radio,
+    rgb,
+    several_nums,
+    text_input,
+)
 from state_dict import aug_dict, state_dict
 
 
