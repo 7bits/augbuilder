@@ -3,7 +3,7 @@ import numpy as np
 import streamlit as st
 from PIL import Image
 
-from elements import checkbox, min_max, num_interval, radio, rgb, several_nums
+from elements import checkbox, min_max, num_interval, radio, rgb, several_nums, text_input
 from state_dict import aug_dict, state_dict
 
 
@@ -77,6 +77,7 @@ def setup_current_choice(current_choice, augmentations, session_state):
         'min_max': min_max,
         'checkbox': checkbox,
         'several_nums': several_nums,
+        'text_input': text_input,
     }
     current_params = {}
     if augmentations[current_choice]:

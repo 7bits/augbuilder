@@ -1185,24 +1185,16 @@
     {
       "param_name": "height",
       "placeholder": {
-        "defaults": "image_height",
-        "limits_list": [
-          1,
-          "image_height"
-        ]
+        "defaults": "image_height"
       },
-      "type": "num_interval"
+      "type": "text_input"
     },
     {
       "param_name": "width",
       "placeholder": {
-        "defaults": "image_width",
-        "limits_list": [
-          1,
-          "image_width"
-        ]
+        "defaults": "image_width"
       },
-      "type": "num_interval"
+      "type": "text_input"
     },
     {
       "defaults": [
@@ -1400,24 +1392,16 @@
     {
       "param_name": "height",
       "placeholder": {
-        "defaults": "image_half_height",
-        "limits_list": [
-          1,
-          "image_height"
-        ]
+        "defaults": "image_half_height"
       },
-      "type": "num_interval"
+      "type": "text_input"
     },
     {
       "param_name": "width",
       "placeholder": {
-        "defaults": "image_half_width",
-        "limits_list": [
-          1,
-          "image_width"
-        ]
+        "defaults": "image_half_width"
       },
-      "type": "num_interval"
+      "type": "text_input"
     },
     {
       "options_list": [
