@@ -1,5 +1,6 @@
 """All streamlit elements for different types of settings."""
 import streamlit as st
+import albumentations
 
 from additional_utils import all_defaults_check, limit_list_check
 
@@ -135,4 +136,26 @@ def checkbox(current_choice, session_state, **params):
 def text_input(current_choice, session_state, **params):
     defaults = all_defaults_check(params['defaults'])
     param_name = params['param_name']
-    return int(st.sidebar.text_input(param_name, defaults))
+    final_name = param_name + ' (' + element_description(current_choice, param_name) + ')'
+
+    return int(st.sidebar.text_input(final_name, defaults))
+
+
+def element_description(current_choice, selected_setting='Description'):
+    description = str(
+        list(
+            getattr(  # noqa WPS609 
+                albumentations, current_choice,
+            ).__dict__.values(),
+        )[1], 
+    )
+    while description[0] in {'\n', ' '}:
+        description = description[1:]
+    if selected_setting == 'Description':
+        result = description[:description.index('\n')] 
+        if 'Args:' not in result:
+            return result
+    else:
+        arg_string = description.split('Args:')[1]
+        print(arg_string)
+        return 'description'

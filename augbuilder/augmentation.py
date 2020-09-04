@@ -11,6 +11,7 @@ from elements import (
     rgb,
     several_nums,
     text_input,
+    element_description,
 )
 from state_dict import aug_dict, state_dict
 
@@ -130,7 +131,14 @@ def setup_current_choice(current_choice, augmentations, session_state):
     }
     current_params = {}
     if augmentations[current_choice]:
-        st.sidebar.subheader('params for {0}'.format(current_choice))
+        desc = element_description(current_choice)
+        if not desc:
+            desc = ''
+        st.sidebar.subheader('params for {0}\n{1}'.format(
+            current_choice,
+            desc,
+        ))
+        
         for params in augmentations[current_choice]:
             if isinstance(params['param_name'], list):
                 res = elements_type[params['type']](
