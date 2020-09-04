@@ -1,3 +1,4 @@
+"""All streamlit elements for different types of settings."""
 import streamlit as st
 
 from additional_utils import all_defaults_check, limit_list_check

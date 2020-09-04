@@ -1,5 +1,10 @@
 def return_layout():
+    """
+    Returns layout.
 
+    Returns:
+        9 elements for transformation example 
+    """
     return """
     <style>
 

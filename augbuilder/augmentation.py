@@ -16,7 +16,15 @@ from state_dict import aug_dict, state_dict
 
 
 def select_next_aug(augmentations):
-    
+    """
+    Returns last selected transformation.
+
+    Parameters:
+        augmentations: dict with all available transformation from json file
+
+    Returns: 
+        last selected transformation
+    """
     oneof_list = [['OneOf'], ['StopOneOf']]
     oneof = ['OneOf', 'StopOneOf']
     default_selection = list(augmentations.keys())
@@ -47,7 +55,18 @@ def select_next_aug(augmentations):
     return selected_aug[:-1]
 
 
-def apply_changes(augment_dict, apply_relaycompose=True):
+def apply_changes(augment_dict, apply_replaycompose=True):
+    """
+    Composes selected transformation.
+
+    Parameters:
+        augment_dict: dict with selected transformations
+        apply_replaycompose: if True, returns ready to apply transformation
+    
+    Returns:
+        transform: returns all selected transformations with params,\
+             if apply_replaycompose - returns ready to apply transformation
+    """
     all_keys = list(augment_dict.keys())
     
     if all_keys:
@@ -58,17 +77,28 @@ def apply_changes(augment_dict, apply_relaycompose=True):
                 transform = add_transformation(transform, i, **current_dict)
             else:
                 transform = add_transformation(transform, i)
-        if apply_relaycompose:
+        if apply_replaycompose:
             transform = albumentations.ReplayCompose(transform)
         return transform
 
 
 def add_transformation(final_transform, curr_transf, **current_dict):
+    """
+    Adds last transformation to existing ones.
+
+    Parameters:
+        final_transform: all transformation with params
+        curr_transf: selected transformation
+        **current_dict: params for current transformation
+    
+    Returns:
+        final_transform: all transformation with params
+    """
     transform = getattr(albumentations, curr_transf)
     if current_dict is not None:
         if curr_transf == 'OneOf':
-            apply_relay = False
-            current_dict = apply_changes(current_dict, apply_relay)
+            apply_replay = False
+            current_dict = apply_changes(current_dict, apply_replay)
             final_transform.append(transform(current_dict))
         else:
             final_transform.append(transform(**current_dict))
@@ -78,6 +108,17 @@ def add_transformation(final_transform, curr_transf, **current_dict):
 
 
 def setup_current_choice(current_choice, augmentations, session_state):
+    """
+    Displays settings current parameters format and returns its value.
+
+    Parameters:
+        current_choice: selected currnet transformation as a string
+        augmentations: dict with all available transformation from json file 
+        session_state: current session information
+
+    Returns:
+        current_params: dict with settings for transformation and its values
+    """
     elements_type = {
         'num_interval': num_interval,
         'radio': radio,
@@ -111,7 +152,7 @@ def setup_current_choice(current_choice, augmentations, session_state):
 
 
 def uploader():
-    # warning about changes in loader behavior till 2020.08.15
+    """Loads an image, converts it to rgb and adds it in state_dict."""
     show_error = False
     st.set_option('deprecation.showfileUploaderEncoding', show_error)
     uploaded_file = st.file_uploader('Upload file', type=['png', 'jpg', 'jpeg'])
@@ -126,6 +167,18 @@ def dict_update(
     augmentations,
     session_state,
 ):
+    """
+    Returns settings for currnet transformation.
+
+    Parameters:
+        aug: settings for current_choice
+        current_choice: selected currnet transformation as a string
+        augmentations: dict with all available transformation from json file 
+        session_state: current session information
+    
+    Returns:
+        settings for current transfornation
+    """
     if aug:
         return setup_current_choice(
             current_choice,
@@ -135,6 +188,12 @@ def dict_update(
 
 
 def build_string():
+    """
+    Creates string to display all selected transformations and its params.
+
+    Returns:
+        result_text: all selected transformations and its params as a one string
+    """
     result_text = ''
     for augm in list(aug_dict.keys()):             
         result_text += '{0}:\n'.format(augm)
