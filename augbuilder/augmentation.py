@@ -5,15 +5,15 @@ from PIL import Image
 
 from elements import (
     checkbox,
+    element_description,
     min_max,
     num_interval,
     radio,
     rgb,
     several_nums,
     text_input,
-    element_description,
 )
-from state_dict import aug_dict, state_dict
+from state_dict import state_dict
 
 
 def select_next_aug(augmentations):
@@ -142,7 +142,7 @@ def setup_current_choice(current_choice, augmentations, session_state):
         for params in augmentations[current_choice]:
             if isinstance(params['param_name'], list):
                 res = elements_type[params['type']](
-                    params['param_name'],
+                    current_choice,
                     session_state,
                     **params,
                 )
@@ -176,7 +176,7 @@ def dict_update(
     session_state,
 ):
     """
-    Returns settings for currnet transformation.
+    Returns settings for current transformation.
 
     Parameters:
         aug: settings for current_choice
@@ -193,25 +193,3 @@ def dict_update(
             augmentations,
             session_state,
         )
-
-
-def build_string():
-    """
-    Creates string to display all selected transformations and its params.
-
-    Returns:
-        result_text: all selected transformations and its params as a one string
-    """
-    result_text = ''
-    for augm in list(aug_dict.keys()):             
-        result_text += '{0}:\n'.format(augm)
-        key_result = ''
-        if aug_dict[augm]:
-            for elem in aug_dict[augm]:  # noqa: WPS528
-                str_temp = '\t{0}: {1}\n'.format(
-                    elem,
-                    aug_dict[augm][elem],
-                )
-                key_result += str_temp
-        result_text += key_result
-    return result_text

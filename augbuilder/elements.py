@@ -1,18 +1,19 @@
 """All streamlit elements for different types of settings."""
 import streamlit as st
-import albumentations
 
 from additional_utils import all_defaults_check, limit_list_check
+from string_builders import element_description, radio_params
 
 
 def num_interval(current_choice, session_state, **params):
 
     defaults = all_defaults_check(params['defaults'])
     param_name = params['param_name']
+    final_name = element_description(current_choice, param_name)
     limits_list = limit_list_check(params['limits_list'])
     element_key = hash(param_name + current_choice + str(session_state))
     return st.sidebar.slider(
-        param_name,
+        final_name,
         limits_list[0],
         limits_list[1],
         defaults,
@@ -24,36 +25,18 @@ def radio(current_choice, session_state, **params):
     param_name = params['param_name']
     options_list = params['options_list']
     element_key = hash(param_name + current_choice + str(session_state))
-    if param_name == 'interpolation':
-        param_interpolation = {
-            'INTER_NEAREST': 0, 
-            'INTER_LINEAR': 1,
-            'INTER_AREA': 2,
-            'INTER_CUBIC': 3,
-            'INTER_LANCZOS4': 4,
-        } 
+    final_name = element_description(current_choice, param_name)
+
+    radio_strings = radio_params(param_name)
+    if radio_strings:
         selected_result = st.sidebar.radio(
-            param_name,
-            list(param_interpolation.keys()),
+            final_name,
+            list(radio_strings.keys()),
             key=element_key,
         )
-        result = param_interpolation[selected_result]
-    elif param_name == 'border_mode':
-        param_border = {
-            'BORDER_CONSTANT': 0, 
-            'BORDER_REPLICATE': 1,
-            'BORDER_REFLECT': 2,
-            'BORDER_WRAP': 3,
-            'BORDER_REFLECT_101': 4,
-        } 
-        selected_result = st.sidebar.radio(
-            param_name,
-            list(param_border.keys()),
-            key=element_key,
-        )
-        result = param_border[selected_result]
+        result = radio_strings[selected_result]
     else:
-        result = st.sidebar.radio(param_name, options_list, key=element_key)
+        result = st.sidebar.radio(final_name, options_list, key=element_key)
         
     if result == 'None':
         result = None
@@ -86,7 +69,9 @@ def several_nums(current_choice, session_state, **params):
             'param_name': j,
             'limits_list': limits_list[i],
         }
-        return_list.append(num_interval(j, session_state, **new_par))
+        return_list.append(
+            num_interval(current_choice, session_state, **new_par),
+        )
     return return_list
 
 
@@ -96,6 +81,7 @@ def min_max(current_choice, session_state, **params):
         min_diff = params.get('min_diff')
     limits_list = params['limits_list']
     subparam_names = params['param_name']
+
     param_name = ' & '.join(subparam_names)
     defaults = all_defaults_check(params['defaults_list'])
 
@@ -129,33 +115,14 @@ def checkbox(current_choice, session_state, **params):
     elif defaults == 0:
         defaults = False 
     param_name = params['param_name']
+    final_name = element_description(current_choice, param_name)
     element_key = hash(param_name + current_choice + str(session_state))
-    return st.sidebar.checkbox(param_name, defaults, key=element_key)
+    return st.sidebar.checkbox(final_name, defaults, key=element_key)
 
 
 def text_input(current_choice, session_state, **params):
     defaults = all_defaults_check(params['defaults'])
     param_name = params['param_name']
-    final_name = param_name + ' (' + element_description(current_choice, param_name) + ')'
+    final_name = element_description(current_choice, param_name)
 
     return int(st.sidebar.text_input(final_name, defaults))
-
-
-def element_description(current_choice, selected_setting='Description'):
-    description = str(
-        list(
-            getattr(  # noqa WPS609 
-                albumentations, current_choice,
-            ).__dict__.values(),
-        )[1], 
-    )
-    while description[0] in {'\n', ' '}:
-        description = description[1:]
-    if selected_setting == 'Description':
-        result = description[:description.index('\n')] 
-        if 'Args:' not in result:
-            return result
-    else:
-        arg_string = description.split('Args:')[1]
-        print(arg_string)
-        return 'description'
