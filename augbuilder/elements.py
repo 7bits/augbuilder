@@ -129,3 +129,9 @@ def checkbox(current_choice, session_state, **params):
     param_name = params['param_name']
     element_key = hash(param_name + current_choice + str(session_state))
     return st.sidebar.checkbox(param_name, defaults, key=element_key)
+
+
+def text_input(current_choice, session_state, **params):
+    defaults = all_defaults_check(params['defaults'])
+    param_name = params['param_name']
+    return int(st.sidebar.text_input(param_name, defaults))
