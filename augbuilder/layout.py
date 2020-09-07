@@ -16,13 +16,18 @@ def return_layout():
         flex-wrap: wrap;
     }
     
-    .main .element-container:nth-child(5),
-    .main .element-container:nth-child(4){
+    .main .element-container:nth-child(1),
+    .main .element-container:nth-child(2){
+        width: 50% !important;
+    } 
+
+    .main .element-container:nth-child(6),
+    .main .element-container:nth-child(5){
         width: 0% !important;
     } 
 
    
-    .main .element-container:nth-child(6),
+    .main .element-container:nth-child(15),
     .main .element-container:nth-child(7),
     .main .element-container:nth-child(8),
     .main .element-container:nth-child(9),
@@ -35,6 +40,10 @@ def return_layout():
         height: 33% !important;
     }
     
+    .main .stFileUploader > div,
+    .main .stFileUploader > label{
+        width: 98% !important;
+    }
     .main .stImage > img{
         width: 40% !important;
     }

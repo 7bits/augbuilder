@@ -1,0 +1,18 @@
+{
+	"CenterCrop": {
+		"height": 184,
+		"width": 640,
+		"p": 0.5
+	},
+	"ChannelShuffle": {
+		"p": 0.8
+	},
+	"ChannelDropout": {
+		"channel_drop_range": [
+			1,
+			2
+		],
+		"fill_value": 117,
+		"p": 0.63
+	}
+}
