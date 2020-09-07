@@ -1,3 +1,5 @@
+import json
+
 import albumentations
 
 from state_dict import aug_dict
@@ -10,20 +12,8 @@ def build_string():
     Returns:
         result_text: all selected transformations and its params as a one string
     """
-    result_text = ''
-    for augm in list(aug_dict.keys()):             
-        result_text += '{0}:\n'.format(augm)
-        key_result = ''
-        if aug_dict[augm]:
-            for elem in aug_dict[augm]:  # noqa: WPS528
-                str_temp = '\t{0}: {1}\n'.format(
-                    elem,
-                    aug_dict[augm][elem],
-                )
-                key_result += str_temp
-        result_text += key_result
-    return result_text
-
+    return json.dumps(aug_dict, indent='\t')
+    
 
 def element_description(current_choice, selected_setting='Description'):
     """

@@ -1,7 +1,5 @@
 import albumentations
-import numpy as np
 import streamlit as st
-from PIL import Image
 
 from elements import (
     checkbox,
@@ -13,7 +11,6 @@ from elements import (
     several_nums,
     text_input,
 )
-from state_dict import state_dict
 
 
 def select_next_aug(augmentations):
@@ -157,16 +154,6 @@ def setup_current_choice(current_choice, augmentations, session_state):
                 )
                 current_params.update({params['param_name']: res})
     return current_params
-
-
-def uploader():
-    """Loads an image, converts it to rgb and adds it in state_dict."""
-    show_error = False
-    st.set_option('deprecation.showfileUploaderEncoding', show_error)
-    uploaded_file = st.file_uploader('Upload file', type=['png', 'jpg', 'jpeg'])
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file).convert('RGB')
-        state_dict.update({'image': image, 'image_array': np.array(image)})
 
 
 def dict_update(

@@ -11,7 +11,7 @@ def num_interval(current_choice, session_state, **params):
     param_name = params['param_name']
     final_name = element_description(current_choice, param_name)
     limits_list = limit_list_check(params['limits_list'])
-    element_key = hash(param_name + current_choice + str(session_state))
+    element_key = hash(final_name + current_choice + str(session_state))
     return st.sidebar.slider(
         final_name,
         limits_list[0],
