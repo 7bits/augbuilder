@@ -6,6 +6,8 @@ from PIL import Image
 from elements import checkbox, min_max, num_interval, radio, rgb, several_nums
 from state_dict import aug_dict, state_dict
 
+import autopep8
+
 
 def select_next_aug(augmentations):
     
@@ -144,6 +146,26 @@ def build_string():
 def build_code():
     transformations = str(apply_changes(aug_dict))
 
-    return 'transformations = albumentations.{tf}'.format(
+    imports = list(aug_dict.keys())
+    last_iter = 0
+    res_imports = ''
+    for imp in imports:
+        if last_iter != len(imports) - 1:
+            res_imports += imp + ',\n'
+        else:
+            res_imports += imp + ','
+        last_iter += 1
+
+    result = '''
+    from albumentations import (
+        {imports}
+    )
+    
+    transformations = albumentations.{tf}'''.format(
+        imports=res_imports,
         tf=transformations,
     )
+
+    return autopep8.fix_code(result, options={
+        'max_line_length': 80,
+    })
