@@ -158,10 +158,11 @@ def build_code():
 
     result = '''
     from albumentations import (
+        ReplayCompose,
         {imports}
     )
     
-    transformations = albumentations.{tf}'''.format(
+    transformations = {tf}'''.format(
         imports=res_imports,
         tf=transformations,
     )
