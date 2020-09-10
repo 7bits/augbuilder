@@ -141,15 +141,6 @@
       ],
       "param_name": "p",
       "type": "num_interval"
-    },
-    {
-      "defaults": 0.5,
-      "limits_list": [
-        0.0,
-        1.0
-      ],
-      "param_name": "p",
-      "type": "num_interval"
     }
   ],
   "CoarseDropout": [
@@ -638,7 +629,7 @@
         100
       ],
       "limits_list": [
-        0,
+        1,
         100
       ],
       "param_name": [
@@ -675,7 +666,7 @@
         100
       ],
       "limits_list": [
-        0,
+        1,
         100
       ],
       "param_name": [

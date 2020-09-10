@@ -11,7 +11,7 @@ def load_augmentations_config(
     path_to_config: str = 'augmentation.json',
 ) -> dict:
     """
-    Load the json config with params of all transforms.
+    Loads the json config with params of all transforms.
 
     Parameters:
         placeholder_params (dict): dict with values of placeholders
@@ -34,7 +34,7 @@ def fill_placeholders(  # noqa: C901, WPS231
     placeholder_params: dict,
 ) -> dict:
     """
-    Fill the placeholder values in the config file.
+    Fills the placeholder values in the config file.
 
     Parameters:
         params (dict): original params dict with placeholders
@@ -65,7 +65,7 @@ def fill_placeholders(  # noqa: C901, WPS231
 
 def save_json(filename, aug_data):
     """
-    Help to save transformation to json file.
+    Helps to save transformation to json file.
 
     Parameters:
         aug_data: dictionary which contains all transormation applied on image
@@ -77,7 +77,7 @@ def save_json(filename, aug_data):
 
 def read_json(filename):
     """
-    Help to read transformation to json file.
+    Helps to read transformation to json file.
 
     Parameters:
         filename: path to file
@@ -92,7 +92,7 @@ def read_json(filename):
 
 def default_check(default):
     """
-    Help to check docstring value.
+    Checks values, connected with image shape, and replace it.
 
     Parameters:
         default: default value for current tranaformation
@@ -113,6 +113,15 @@ def default_check(default):
 
 
 def all_defaults_check(defaults):
+    """
+    Checks all default parameters, replace string to numeric type if needed.
+
+    Parameters:
+        defaults: all default values for current tranaformation
+
+    Returns:
+        defaults: values for current transformation in numeric type
+    """
     if isinstance(defaults, list):
         defaults = [default_check(x) for x in defaults]
     else:
@@ -121,6 +130,16 @@ def all_defaults_check(defaults):
 
 
 def limit_list_check(limits_list):
+    """
+    Replaces image shape parameters in string on numeric.
+
+    Parameters:
+        limits_list: list, which contains limits for current transformation
+
+    Returns:
+        limits_list: list, which contains limits for current\
+             transformation(in numeric type)
+    """
     if limits_list[1] == 'image_height':
         limits_list[1] = state_dict['image_params']['height']
 
