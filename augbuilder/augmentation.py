@@ -53,17 +53,17 @@ def select_next_aug(augmentations):
     return selected_aug[:-1]
 
 
-def apply_changes(augment_dict, apply_replaycompose=True):
+def apply_changes(augment_dict, apply_compose=True):
     """
     Composes selected transformation.
 
     Parameters:
         augment_dict: dict with selected transformations
-        apply_replaycompose: if True, returns ready to apply transformation
+        apply_compose: if True, returns ready to apply transformation
     
     Returns:
         transform: returns all selected transformations with params,\
-             if apply_replaycompose - returns ready to apply transformation
+             if apply_compose - returns ready to apply transformation
     """
     all_keys = list(augment_dict.keys())
     
@@ -75,8 +75,8 @@ def apply_changes(augment_dict, apply_replaycompose=True):
                 transform = add_transformation(transform, i, **current_dict)
             else:
                 transform = add_transformation(transform, i)
-        if apply_replaycompose:
-            transform = albumentations.ReplayCompose(transform)
+        if apply_compose:
+            transform = albumentations.Compose(transform)
         return transform
 
 

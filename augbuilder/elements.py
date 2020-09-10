@@ -83,16 +83,21 @@ def min_max(current_choice, session_state, **params):
     subparam_names = params['param_name']
 
     param_name = ' & '.join(subparam_names)
+    description_first = element_description(current_choice, subparam_names[0])
+    final_name = param_name + '( {0}; the same for {1})'.format(
+        description_first,
+        subparam_names[1],
+    ) 
     defaults = all_defaults_check(params['defaults_list'])
 
     new_params = {
         'defaults': defaults,
         'limits_list': limits_list,
-        'param_name': param_name,
+        'param_name': final_name,
     }
     result = list(
         num_interval(
-            param_name, session_state, **new_params,
+            final_name, session_state, **new_params,
         ),
     )
     min_val = result[0]

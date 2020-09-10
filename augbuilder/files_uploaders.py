@@ -6,7 +6,7 @@ from state_dict import state_dict
 
 
 def image_uploader():
-    """Loads an image, converts it to rgb and adds it in state_dict."""
+    """Loads an image, converts it to rgb and adds in state_dict."""
     show_error = False
     st.set_option('deprecation.showfileUploaderEncoding', show_error)
     uploaded_file = st.file_uploader(

@@ -16,8 +16,9 @@ def return_layout():
         flex-wrap: wrap;
     }
     
-    .main .element-container:nth-child(5),
-    .main .element-container:nth-child(4){
+
+    .main .element-container:nth-child(4),
+    .main .element-container:nth-child(5){
         width: 0% !important;
     } 
 
@@ -35,6 +36,10 @@ def return_layout():
         height: 33% !important;
     }
     
+    .main .stFileUploader > div,
+    .main .stFileUploader > label{
+        width: 98% !important;
+    }
     .main .stImage > img{
         width: 40% !important;
     }

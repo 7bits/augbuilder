@@ -40,8 +40,10 @@ def element_description(current_choice, selected_setting='Description'):
         selection_index = arg_string.find(selected_setting + ' ')
         if selection_index == -1:
             return selected_setting
-        string_build = arg_string[selection_index:]    
-        return string_build[:string_build.index('\n')]
+        string_build = arg_string[selection_index:]
+        dot_index = string_build.find('.')
+        end_index = string_build.find('\n')
+        return string_build[:min(dot_index, end_index)]
 
 
 def radio_params(param_name):
