@@ -1,12 +1,11 @@
 import albumentations
+import autopep8
 import numpy as np
 import streamlit as st
 from PIL import Image
 
 from elements import checkbox, min_max, num_interval, radio, rgb, several_nums
 from state_dict import aug_dict, state_dict
-
-import autopep8
 
 
 def select_next_aug(augmentations):
@@ -53,18 +52,19 @@ def apply_changes(augment_dict, apply_replaycompose=True):
             else:
                 transform = add_transformation(transform, i)
         if apply_replaycompose:
-            transform = albumentations.ReplayCompose(transform)
+            transform = albumentations.Compose(transform)
         return transform
 
 
 def add_transformation(final_transform, curr_transf, **current_dict):
     transform = getattr(albumentations, curr_transf)
-    if current_dict is not None:
+    if (current_dict is not None):
         if curr_transf == 'OneOf':
             apply_relay = False
             current_dict = apply_changes(current_dict, apply_relay)
             final_transform.append(transform(current_dict))
         else:
+
             final_transform.append(transform(**current_dict))
     else: 
         final_transform.append(transform())
@@ -143,28 +143,40 @@ def build_string():
     return result_text
 
 
-def build_code():
-    transformations = str(apply_changes(aug_dict))
-
-    imports = list(aug_dict.keys())
+def build_code_substring(iterable):
     last_iter = 0
-    res_imports = ''
-    for imp in imports:
-        if last_iter != len(imports) - 1:
-            res_imports += imp + ',\n'
+    res = ''
+    for imp in iterable:
+        if last_iter < len(list(iterable)) - 1:
+            res += str(imp) + ',\n'
         else:
-            res_imports += imp + ','
+            res += str(imp) + ','
         last_iter += 1
+    return res
 
-    result = '''
+
+def build_code():
+    imports = list(aug_dict.keys())
+
+    res_imports = build_code_substring(imports)
+    composes = build_code_substring(apply_changes(aug_dict))
+    pytorch2tensor = ''
+    if st.sidebar.checkbox('add ToTensorv2()'):  
+        pytorch2tensor = 'from albumentations.pytorch import ToTensorV2'
+        composes += '\nToTensorV2(),'
+
+    result = """{pytorch2tensor}
     from albumentations import (
-        ReplayCompose,
+        Compose,
         {imports}
     )
     
-    transformations = {tf}'''.format(
+    transformations = Compose([
+    {tf}
+    ])""".format(
+        pytorch2tensor=pytorch2tensor,
         imports=res_imports,
-        tf=transformations,
+        tf=composes,
     )
 
     return autopep8.fix_code(result, options={
