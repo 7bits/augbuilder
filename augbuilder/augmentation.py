@@ -1,15 +1,29 @@
 import albumentations
 import autopep8
-import numpy as np
 import streamlit as st
-from PIL import Image
 
-from elements import checkbox, min_max, num_interval, radio, rgb, several_nums
-from state_dict import aug_dict, state_dict
+from elements import (
+    checkbox,
+    element_description,
+    min_max,
+    num_interval,
+    radio,
+    rgb,
+    several_nums,
+    text_input,
+)
 
 
 def select_next_aug(augmentations):
-    
+    """
+    Returns last selected transformation.
+
+    Parameters:
+        augmentations: dict with all available transformation from json file
+
+    Returns: 
+        last selected transformation
+    """
     oneof_list = [['OneOf'], ['StopOneOf']]
     oneof = ['OneOf', 'StopOneOf']
     default_selection = list(augmentations.keys())
@@ -40,7 +54,18 @@ def select_next_aug(augmentations):
     return selected_aug[:-1]
 
 
-def apply_changes(augment_dict, apply_replaycompose=True):
+def apply_changes(augment_dict, apply_compose=True):
+    """
+    Composes selected transformation.
+
+    Parameters:
+        augment_dict: dict with selected transformations
+        apply_compose: if True, returns ready to apply transformation
+    
+    Returns:
+        transform: returns all selected transformations with params,\
+             if apply_compose - returns ready to apply transformation
+    """
     all_keys = list(augment_dict.keys())
     
     if all_keys:
@@ -51,17 +76,28 @@ def apply_changes(augment_dict, apply_replaycompose=True):
                 transform = add_transformation(transform, i, **current_dict)
             else:
                 transform = add_transformation(transform, i)
-        if apply_replaycompose:
+        if apply_compose:
             transform = albumentations.Compose(transform)
         return transform
 
 
 def add_transformation(final_transform, curr_transf, **current_dict):
+    """
+    Adds last transformation to existing ones.
+
+    Parameters:
+        final_transform: all transformation with params
+        curr_transf: selected transformation
+        **current_dict: params for current transformation
+    
+    Returns:
+        final_transform: all transformation with params
+    """
     transform = getattr(albumentations, curr_transf)
     if (current_dict is not None):
         if curr_transf == 'OneOf':
-            apply_relay = False
-            current_dict = apply_changes(current_dict, apply_relay)
+            apply_replay = False
+            current_dict = apply_changes(current_dict, apply_replay)
             final_transform.append(transform(current_dict))
         else:
 
@@ -72,6 +108,17 @@ def add_transformation(final_transform, curr_transf, **current_dict):
 
 
 def setup_current_choice(current_choice, augmentations, session_state):
+    """
+    Displays settings current parameters format and returns its value.
+
+    Parameters:
+        current_choice: selected currnet transformation as a string
+        augmentations: dict with all available transformation from json file 
+        session_state: current session information
+
+    Returns:
+        current_params: dict with settings for transformation and its values
+    """
     elements_type = {
         'num_interval': num_interval,
         'radio': radio,
@@ -79,14 +126,22 @@ def setup_current_choice(current_choice, augmentations, session_state):
         'min_max': min_max,
         'checkbox': checkbox,
         'several_nums': several_nums,
+        'text_input': text_input,
     }
     current_params = {}
     if augmentations[current_choice]:
-        st.sidebar.subheader('params for {0}'.format(current_choice))
+        desc = element_description(current_choice)
+        if not desc:
+            desc = ''
+        st.sidebar.subheader('params for {0}\n{1}'.format(
+            current_choice,
+            desc,
+        ))
+        
         for params in augmentations[current_choice]:
             if isinstance(params['param_name'], list):
                 res = elements_type[params['type']](
-                    params['param_name'],
+                    current_choice,
                     session_state,
                     **params,
                 )
@@ -103,27 +158,30 @@ def setup_current_choice(current_choice, augmentations, session_state):
     return current_params
 
 
-def uploader():
-    # warning about changes in loader behavior till 2020.08.15
-    show_error = False
-    st.set_option('deprecation.showfileUploaderEncoding', show_error)
-    uploaded_file = st.file_uploader('Upload file', type=['png', 'jpg', 'jpeg'])
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file).convert('RGB')
-        state_dict.update({'image': image, 'image_array': np.array(image)})
-
-
 def dict_update(
     aug,
     current_choice,
     augmentations,
     session_state,
 ):
+    """
+    Returns settings for current transformation.
+
+    Parameters:
+        aug: settings for current_choice
+        current_choice: selected currnet transformation as a string
+        augmentations: dict with all available transformation from json file 
+        session_state: current session information
+    
+    Returns:
+        settings for current transfornation
+    """
     if aug:
         return setup_current_choice(
             current_choice,
             augmentations,
             session_state,
+            
         )
 
 

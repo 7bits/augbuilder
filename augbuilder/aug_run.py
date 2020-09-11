@@ -5,25 +5,20 @@ import numpy as np
 import streamlit as st
 
 from additional_utils import load_augmentations_config
-from augmentation import (
-    apply_changes,
-    build_code,
-    build_string,
-    dict_update,
-    select_next_aug,
-    uploader,
-)
+from augmentation import apply_changes, build_code, dict_update, select_next_aug
+from files_uploaders import image_uploader
 from layout import return_layout
 from session_state import get
 from state_dict import aug_dict, clear_dict, oneof_dict, state_dict
+from string_builders import build_string
 
 session_state = get(id=uuid.uuid4())
 root_path = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(root_path, 'augmentation.json')
 
 clear_dict(session_state)
-uploader()
-st.text('Upload an image, then select transformation from the\
+image_uploader()
+st.text('Upload an image, then select transformation from the \
 list.\nTo apply OneOf use OneOf at the beginning and StopOneOf\
  to close it.')
 
