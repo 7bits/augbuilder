@@ -5,7 +5,8 @@ import numpy as np
 import streamlit as st
 
 from additional_utils import load_augmentations_config
-from augmentation import apply_changes, build_code, dict_update, select_next_aug
+from augmentation import apply_changes, dict_update, select_next_aug
+from code_generator import build_code
 from files_uploaders import image_uploader
 from layout import return_layout
 from session_state import get
