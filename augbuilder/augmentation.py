@@ -11,6 +11,7 @@ from elements import (
     several_nums,
     text_input,
 )
+from state_dict import aug_dict
 
 
 def select_next_aug(augmentations):
@@ -31,12 +32,32 @@ def select_next_aug(augmentations):
         st.sidebar.selectbox('select transformation 1: ', selection),
     ]
 
+    check_len = (len(selected_aug) + 1 < len(aug_dict))
+
+    for saved_aug in list(aug_dict.keys()):
+        if saved_aug not in selected_aug:
+            print(saved_aug)
+            curr_selection = []
+            curr_selection.append(saved_aug)
+
+            number = len(selected_aug) + 1
+            select_string = 'select transformation {0}: '.format(
+                number,
+            )
+
+            downloaded_selection = curr_selection + selection
+            selected_aug.append(st.sidebar.selectbox(
+                select_string,
+                downloaded_selection,
+                key = str(number) + saved_aug
+            ))    
+
     while (selected_aug[-1] != 'None'):
         transformation_number = len(selected_aug) + 1
         select_string = 'select transformation {0}: '.format(
             transformation_number,
         )
-        
+
         current_aug = selected_aug[-1] 
         if current_aug == oneof[0]:
             oneof_ind = selection.index(oneof[0])
@@ -48,9 +69,32 @@ def select_next_aug(augmentations):
         if selected_aug and current_aug not in oneof:
             selection.remove(current_aug)
 
-        selected_aug.append(st.sidebar.selectbox(select_string, selection))
-    
-    return selected_aug[:-1]
+        selected_aug.append(st.sidebar.selectbox(
+            select_string,
+            selection,
+            key = transformation_number,
+        ))
+
+    # print(selected_aug)
+    # if check_len:
+    #     selected_aug = selected_aug[:-1]
+    #     for saved_aug in list(aug_dict.keys()):
+    #         if saved_aug not in selected_aug:
+    #             curr_selection = []
+    #             curr_selection.append(saved_aug)
+
+    #             number = len(selected_aug) + 1
+    #             select_string = 'select transformation {0}: '.format(
+    #                 number,
+    #             )
+
+    #             downloaded_selection = curr_selection + selection
+    #             selected_aug.append(st.sidebar.selectbox(
+    #                 select_string,
+    #                 downloaded_selection,
+    #                 key = str(number) + saved_aug
+    #            ))
+    return list(filter(lambda a: a != 'None', selected_aug))
 
 
 def apply_changes(augment_dict, apply_compose=True):
