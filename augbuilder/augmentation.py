@@ -34,7 +34,7 @@ def select_next_aug(augmentations):
 
     check_len = (len(selected_aug) + 1 < len(aug_dict))
 
-    for saved_aug in list(aug_dict.keys()):
+    for saved_aug in list(aug_dict.keys()): #it works only if you select none twice in the list, also there are smth weird happens when you add new transformation(you should do it twice)
         if saved_aug not in selected_aug:
             print(saved_aug)
             curr_selection = []
