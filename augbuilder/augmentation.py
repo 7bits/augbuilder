@@ -93,12 +93,13 @@ def add_transformation(final_transform, curr_transf, **current_dict):
         final_transform: all transformation with params
     """
     transform = getattr(albumentations, curr_transf)
-    if current_dict is not None:
+    if (current_dict is not None):
         if curr_transf == 'OneOf':
             apply_replay = False
             current_dict = apply_changes(current_dict, apply_replay)
             final_transform.append(transform(current_dict))
         else:
+
             final_transform.append(transform(**current_dict))
     else: 
         final_transform.append(transform())
