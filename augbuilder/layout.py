@@ -14,14 +14,18 @@ def return_layout():
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
+        gap: 2.5rem;
     }
     
 
+
+
+    .main .element-container:nth-child(3),
     .main .element-container:nth-child(4),
     .main .element-container:nth-child(5){
-        width: 0% !important;
-    } 
+        width: 30% !important;
 
+    }
    
     .main .element-container:nth-child(6),
     .main .element-container:nth-child(7),
@@ -32,17 +36,22 @@ def return_layout():
     .main .element-container:nth-child(12),
     .main .element-container:nth-child(13),
      .main .element-container:nth-child(14){
-        width: 33% !important;
-        height: 33% !important;
+        width: 30% !important;
+        height: 30% !important;
     }
-    
+
     .main .stFileUploader > div,
     .main .stFileUploader > label{
         width: 98% !important;
     }
-    .main .stImage > img{
+    .main .stImage {
         width: 40% !important;
+        
     }
 
+    .main .stImage > img{
+        width: 100% !important;
+        
+    }
     </style>
     """
