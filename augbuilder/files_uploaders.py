@@ -4,7 +4,7 @@ import numpy as np
 import streamlit as st
 from PIL import Image
 
-from state_dict import aug_dict, state_dict, loaded_dict
+from state_dict import loaded_dict, state_dict
 
 
 def image_uploader():
@@ -27,4 +27,4 @@ def config_uploader():
     )
     if uploaded_file is not None:
         config = json.load(uploaded_file)
-        loaded_dict.update(config)
+        state_dict.update({'loaded': config})

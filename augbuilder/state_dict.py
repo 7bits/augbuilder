@@ -3,6 +3,7 @@ aug_dict = {}
 oneof_dict = {}
 loaded_dict = {}
 
+
 def clear_dict(state):
     skey = 'session'
     if skey not in list(state_dict.keys()) or state != state_dict[skey]:

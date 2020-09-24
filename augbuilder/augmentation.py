@@ -11,7 +11,11 @@ from elements import (
     several_nums,
     text_input,
 )
-from state_dict import aug_dict, loaded_dict
+from state_dict import state_dict
+
+# TODO move adding new st here, becaue select_next_aug is too complex, according to linter
+#def new_selectbox(selection, number, selected_aug):
+
 
 
 def select_next_aug(augmentations):
@@ -30,34 +34,31 @@ def select_next_aug(augmentations):
     selection = ['None'] + oneof_list[0] + default_selection
 
     selected_aug = []
-    if loaded_dict:
-        for saved_aug in list(loaded_dict.keys()):
+    if 'loaded' in state_dict.keys():
+        loaded_dict = state_dict['loaded'].keys()
+        for saved_aug in list(loaded_dict):
             if saved_aug not in selected_aug:
                 curr_selection = []
                 curr_selection.append(saved_aug)
 
-                number = len(selected_aug) + 1
                 select_string = 'select transformation {0}: '.format(
-                    number,
+                    len(selected_aug) + 1,
                 )
 
                 downloaded_selection = curr_selection + selection
                 selected_aug.append(st.sidebar.selectbox(
                     select_string,
                     downloaded_selection,
-                    key = str(number) + saved_aug
-               ))
+                    key=str(len(selected_aug) + 1) + saved_aug,
+                ))
     else:
         selected_aug = [
             st.sidebar.selectbox('select transformation 1: ', selection),
         ]
-
-    check_len = (len(selected_aug) + 1 < len(aug_dict))
     
     while (selected_aug[-1] != 'None'):
-        transformation_number = len(selected_aug) + 1
         select_string = 'select transformation {0}: '.format(
-            transformation_number,
+            len(selected_aug) + 1,
         )
 
         current_aug = selected_aug[-1] 
@@ -67,14 +68,13 @@ def select_next_aug(augmentations):
         elif current_aug == oneof[1]: 
             stoponeof_ind = selection.index(oneof[1])
             selection[stoponeof_ind] = oneof[0]
-
-        if selected_aug and current_aug not in oneof:
+        elif selected_aug: #and current_aug not in oneof:
             selection.remove(current_aug)
 
         selected_aug.append(st.sidebar.selectbox(
             select_string,
             selection,
-            key = transformation_number,
+            key=len(selected_aug) + 1,
         ))
 
     return list(filter(lambda a: a != 'None', selected_aug))
