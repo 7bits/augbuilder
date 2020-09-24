@@ -8,6 +8,9 @@ def return_layout():
     return """
     <style>
 
+    .main{
+        overflow-x: hidden !important;
+    }
     .main .block-container > div{
 
         width: 130% !important;
@@ -17,17 +20,19 @@ def return_layout():
         gap: 2.5rem;
     }
     
-
-
-
-    .main .element-container:nth-child(3),
+    .main .element-container:nth-child(6),
     .main .element-container:nth-child(4),
     .main .element-container:nth-child(5){
         width: 30% !important;
 
     }
+
+    .main .element-container:nth-child(1),
+    .main .element-container:nth-child(2){
+        width: 45% !important;
+    } 
    
-    .main .element-container:nth-child(6),
+    .main .element-container:nth-child(15),
     .main .element-container:nth-child(7),
     .main .element-container:nth-child(8),
     .main .element-container:nth-child(9),
