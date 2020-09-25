@@ -38,7 +38,9 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
 
     oneof_flag = False
 
-    if current_aug:
+    saved_aug = []
+    
+    if current_aug:   
         for i in current_aug:
             oneof = ['OneOf', 'StopOneOf']
             current_choice = i
@@ -47,6 +49,7 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
 
             transorm_check = i not in oneof
             aug = None
+
             if transorm_check and augmentations[current_choice]:
                 aug = augmentations[current_choice]
 

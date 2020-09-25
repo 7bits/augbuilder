@@ -18,7 +18,7 @@ from state_dict import state_dict
 
 
 
-def select_next_aug(augmentations):
+def select_next_aug(augmentations):#TODO добавить удаление из списка трансформаций для загруженных элементов
     """
     Returns last selected transformation.
 

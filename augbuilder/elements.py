@@ -3,12 +3,25 @@ import streamlit as st
 
 from additional_utils import all_defaults_check, limit_list_check
 from string_builders import element_description, radio_params
+from state_dict import state_dict
+
+
+def load_default(default, current_choice, param_name):
+    result = default
+    if 'loaded' in state_dict.keys():
+        saved = state_dict['loaded'][current_choice] #TODO if param_name has & :???? 
+        result = saved[param_name]
+        return result
+    else:
+        return result
 
 
 def num_interval(current_choice, session_state, **params):
-
     defaults = all_defaults_check(params['defaults'])
     param_name = params['param_name']
+
+    if '&' not in param_name:
+        defaults = load_default(defaults, current_choice, param_name)
     final_name = element_description(current_choice, param_name)
     limits_list = limit_list_check(params['limits_list'])
     element_key = hash(final_name + current_choice + str(session_state))
@@ -37,7 +50,6 @@ def radio(current_choice, session_state, **params):
         result = radio_strings[selected_result]
     else:
         result = st.sidebar.radio(final_name, options_list, key=element_key)
-        
     if result == 'None':
         result = None
     return result
@@ -58,10 +70,14 @@ def rgb(current_choice, session_state, **params):
     return rgb_result
 
 
-def several_nums(current_choice, session_state, **params):
+def several_nums(current_choice, session_state, **params): #TODO add check defaults here
     defaults = all_defaults_check(params['defaults_list'])
     limits_list = params['limits_list']
     subparam_names = params['subparam_names']
+
+    for i in range(len(defaults)):
+        defaults[i] = load_default(defaults[i], current_choice, subparam_names[i])
+
     return_list = []
     for i, j in enumerate(subparam_names):
         new_par = {
@@ -81,6 +97,10 @@ def min_max(current_choice, session_state, **params):
         min_diff = params.get('min_diff')
     limits_list = params['limits_list']
     subparam_names = params['param_name']
+    defaults = all_defaults_check(params['defaults_list'])
+
+    for i in range(len(defaults)):
+        defaults[i] = load_default(defaults[i], current_choice, subparam_names[i])
 
     param_name = ' & '.join(subparam_names)
     description_first = element_description(current_choice, subparam_names[0])
@@ -88,7 +108,6 @@ def min_max(current_choice, session_state, **params):
         description_first,
         subparam_names[1],
     ) 
-    defaults = all_defaults_check(params['defaults_list'])
 
     new_params = {
         'defaults': defaults,
