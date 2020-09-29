@@ -2,14 +2,14 @@
 import streamlit as st
 
 from additional_utils import all_defaults_check, limit_list_check
-from string_builders import element_description, radio_params
 from state_dict import state_dict
+from string_builders import element_description, radio_params
 
 
 def load_default(default, current_choice, param_name):
     result = default
-    if 'loaded' in state_dict.keys():
-        saved = state_dict['loaded'][current_choice] #TODO if param_name has & :???? 
+    if 'loaded' in state_dict.keys() and current_choice in state_dict['loaded'].keys():
+        saved = state_dict['loaded'][current_choice]
         result = saved[param_name]
         return result
     else:
@@ -20,7 +20,7 @@ def num_interval(current_choice, session_state, **params):
     defaults = all_defaults_check(params['defaults'])
     param_name = params['param_name']
 
-    if '&' not in param_name:
+    if '&' not in param_name and 'subparam_names' not in params.keys():
         defaults = load_default(defaults, current_choice, param_name)
     final_name = element_description(current_choice, param_name)
     limits_list = limit_list_check(params['limits_list'])
@@ -34,7 +34,7 @@ def num_interval(current_choice, session_state, **params):
     )
 
 
-def radio(current_choice, session_state, **params):
+def radio(current_choice, session_state, **params): 
     param_name = params['param_name']
     options_list = params['options_list']
     element_key = hash(param_name + current_choice + str(session_state))
@@ -42,14 +42,27 @@ def radio(current_choice, session_state, **params):
 
     radio_strings = radio_params(param_name)
     if radio_strings:
+        default = load_default(0, current_choice, param_name)
+        radio_values = list(radio_strings.keys())
+        resulted_values = []
+        resulted_values.append(radio_values.pop(default))
         selected_result = st.sidebar.radio(
             final_name,
-            list(radio_strings.keys()),
+            resulted_values + radio_values,
             key=element_key,
         )
         result = radio_strings[selected_result]
     else:
-        result = st.sidebar.radio(final_name, options_list, key=element_key)
+        default = load_default('None', current_choice, param_name)
+        resulted_values = []
+        resulted_values.append(default)
+        resulted_values = list(set(resulted_values + options_list))
+
+        result = st.sidebar.radio(
+            final_name,
+            resulted_values,
+            key=element_key,
+        )
     if result == 'None':
         result = None
     return result
@@ -57,26 +70,28 @@ def radio(current_choice, session_state, **params):
 
 def rgb(current_choice, session_state, **params):
     rgb_result = []
+    
+    default = load_default(0, current_choice, params['param_name'])
     colors = ['red', 'green', 'blue']
     max_color = 255
     element_key = hash(current_choice + str(session_state))
-    for i in colors:
-        rgb_result.append(int(st.sidebar.slider(
-            i,
+    for i in range(3):
+        rgb_result.append(int(st.sidebar.slider(  
+            colors[i],
             0,
             max_color,
+            default[i],
             key=element_key,
         )))
     return rgb_result
 
 
-def several_nums(current_choice, session_state, **params): #TODO add check defaults here
+def several_nums(current_choice, session_state, **params):
     defaults = all_defaults_check(params['defaults_list'])
     limits_list = params['limits_list']
     subparam_names = params['subparam_names']
 
-    for i in range(len(defaults)):
-        defaults[i] = load_default(defaults[i], current_choice, subparam_names[i])
+    defaults = load_default(defaults, current_choice, params['param_name'])
 
     return_list = []
     for i, j in enumerate(subparam_names):
@@ -84,6 +99,7 @@ def several_nums(current_choice, session_state, **params): #TODO add check defau
             'defaults': defaults[i],
             'param_name': j,
             'limits_list': limits_list[i],
+            'subparam_names': subparam_names
         }
         return_list.append(
             num_interval(current_choice, session_state, **new_par),
@@ -134,6 +150,7 @@ def min_max(current_choice, session_state, **params):
 
 def checkbox(current_choice, session_state, **params):
     defaults = all_defaults_check(params['defaults'])
+    defaults = load_default(defaults, current_choice, params['param_name'])
     if defaults == 1:
         defaults = True
     elif defaults == 0:

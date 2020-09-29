@@ -1,7 +1,6 @@
 state_dict = {}
 aug_dict = {}
 oneof_dict = {}
-loaded_dict = {}
 
 
 def clear_dict(state):

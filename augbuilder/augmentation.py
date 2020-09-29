@@ -18,7 +18,7 @@ from state_dict import state_dict
 
 
 
-def select_next_aug(augmentations):#TODO добавить удаление из списка трансформаций для загруженных элементов
+def select_next_aug(augmentations):#TODO добавить удаление из списка трансформаций для загруженных элементов или загружать его циклом
     """
     Returns last selected transformation.
 
@@ -45,12 +45,14 @@ def select_next_aug(augmentations):#TODO добавить удаление из 
                     len(selected_aug) + 1,
                 )
 
+                selection.remove(saved_aug)
                 downloaded_selection = curr_selection + selection
                 selected_aug.append(st.sidebar.selectbox(
                     select_string,
                     downloaded_selection,
                     key=str(len(selected_aug) + 1) + saved_aug,
                 ))
+
     else:
         selected_aug = [
             st.sidebar.selectbox('select transformation 1: ', selection),
@@ -68,7 +70,7 @@ def select_next_aug(augmentations):#TODO добавить удаление из 
         elif current_aug == oneof[1]: 
             stoponeof_ind = selection.index(oneof[1])
             selection[stoponeof_ind] = oneof[0]
-        elif selected_aug: #and current_aug not in oneof:
+        elif selected_aug and current_aug in selection: #and current_aug not in oneof:
             selection.remove(current_aug)
 
         selected_aug.append(st.sidebar.selectbox(
