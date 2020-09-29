@@ -420,6 +420,17 @@
       "type": "num_interval"
     }
   ],
+  "FancyPCA":[
+    {
+      "defaults": 0.1,
+      "limits_list": [
+        0.0,
+        100.0
+      ],
+      "param_name": "alpha",
+      "type": "num_interval"
+    }
+  ],
   "Flip": [
     {
       "defaults": 0.5,
@@ -519,6 +530,7 @@
       ],
       "param_name": "p",
       "type": "num_interval"
+      
     }
   ],
   "HorizontalFlip": [

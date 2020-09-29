@@ -1,19 +1,8 @@
 """All streamlit elements for different types of settings."""
 import streamlit as st
 
-from additional_utils import all_defaults_check, limit_list_check
-from state_dict import state_dict
 from string_builders import element_description, radio_params
-
-
-def load_default(default, current_choice, param_name):
-    result = default
-    if 'loaded' in state_dict.keys() and current_choice in state_dict['loaded'].keys():
-        saved = state_dict['loaded'][current_choice]
-        result = saved[param_name]
-        return result
-    else:
-        return result
+from values_checkers import all_defaults_check, limit_list_check, load_default
 
 
 def num_interval(current_choice, session_state, **params):
@@ -70,18 +59,20 @@ def radio(current_choice, session_state, **params):
 
 def rgb(current_choice, session_state, **params):
     rgb_result = []
-    
-    default = load_default(0, current_choice, params['param_name'])
+    param_name = params['param_name']
+
+    default = load_default([0, 0, 0], current_choice, param_name)
     colors = ['red', 'green', 'blue']
     max_color = 255
-    element_key = hash(current_choice + str(session_state))
+    element_key = hash(current_choice + param_name + str(session_state))
+    st.sidebar.write(param_name)
     for i in range(3):
         rgb_result.append(int(st.sidebar.slider(  
             colors[i],
             0,
             max_color,
             default[i],
-            key=element_key,
+            key=hash(element_key + i),
         )))
     return rgb_result
 
@@ -99,7 +90,7 @@ def several_nums(current_choice, session_state, **params):
             'defaults': defaults[i],
             'param_name': j,
             'limits_list': limits_list[i],
-            'subparam_names': subparam_names
+            'subparam_names': subparam_names,
         }
         return_list.append(
             num_interval(current_choice, session_state, **new_par),
@@ -116,7 +107,11 @@ def min_max(current_choice, session_state, **params):
     defaults = all_defaults_check(params['defaults_list'])
 
     for i in range(len(defaults)):
-        defaults[i] = load_default(defaults[i], current_choice, subparam_names[i])
+        defaults[i] = load_default(
+            defaults[i],
+            current_choice,
+            subparam_names[i],
+        )
 
     param_name = ' & '.join(subparam_names)
     description_first = element_description(current_choice, subparam_names[0])
@@ -149,21 +144,21 @@ def min_max(current_choice, session_state, **params):
 
 
 def checkbox(current_choice, session_state, **params):
+    param_name = params['param_name']
+
     defaults = all_defaults_check(params['defaults'])
-    defaults = load_default(defaults, current_choice, params['param_name'])
+    defaults = load_default(defaults, current_choice, param_name)
     if defaults == 1:
         defaults = True
     elif defaults == 0:
         defaults = False 
-    param_name = params['param_name']
     final_name = element_description(current_choice, param_name)
     element_key = hash(param_name + current_choice + str(session_state))
     return st.sidebar.checkbox(final_name, defaults, key=element_key)
 
 
-def text_input(current_choice, session_state, **params):
+def text_input(current_choice, session_state, **params):#TODO add default loader
     defaults = all_defaults_check(params['defaults'])
-    param_name = params['param_name']
-    final_name = element_description(current_choice, param_name)
+    final_name = element_description(current_choice, params['param_name'])
 
     return int(st.sidebar.text_input(final_name, defaults))

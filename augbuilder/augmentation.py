@@ -13,12 +13,28 @@ from elements import (
 )
 from state_dict import state_dict
 
-# TODO move adding new st here, becaue select_next_aug is too complex, according to linter
-#def new_selectbox(selection, number, selected_aug):
 
+# TODO move adding new st here, becaue select_next_aug is too complex, according to linter
+# def new_selectbox(select_string, downloaded_selection, selected_aug, saved_aug):
+#     return st.sidebar.selectbox(  # append it  to selected_aug
+#         select_string,
+#         downloaded_selection,
+#         key=str(len(selected_aug) + 1) + saved_aug,
+#     )
+# def select_next_aug(augmentations):
+#     oneof_list = [['OneOf'], ['StopOneOf']]
+#     oneof = ['OneOf', 'StopOneOf']
+#     default_selection = list(augmentations.keys())
+#     selection = ['None'] + oneof_list[0] + default_selection
+
+#     selected_aug = []
+
+#     while (selected_aug[:-1] != 'None'):
+        
 
 
 def select_next_aug(augmentations):#TODO добавить удаление из списка трансформаций для загруженных элементов или загружать его циклом
+#загрузка трансформаций не работает с oneof
     """
     Returns last selected transformation.
 
@@ -36,6 +52,7 @@ def select_next_aug(augmentations):#TODO добавить удаление из 
     selected_aug = []
     if 'loaded' in state_dict.keys():
         loaded_dict = state_dict['loaded'].keys()
+
         for saved_aug in list(loaded_dict):
             if saved_aug not in selected_aug:
                 curr_selection = []
@@ -70,7 +87,7 @@ def select_next_aug(augmentations):#TODO добавить удаление из 
         elif current_aug == oneof[1]: 
             stoponeof_ind = selection.index(oneof[1])
             selection[stoponeof_ind] = oneof[0]
-        elif selected_aug and current_aug in selection: #and current_aug not in oneof:
+        elif selected_aug and current_aug in selection:
             selection.remove(current_aug)
 
         selected_aug.append(st.sidebar.selectbox(
