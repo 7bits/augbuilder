@@ -4,7 +4,7 @@ import numpy as np
 import streamlit as st
 from PIL import Image
 
-from state_dict import state_dict
+from state_dict import state_dict, file_path
 
 
 def image_uploader():
@@ -20,11 +20,19 @@ def image_uploader():
         state_dict.update({'image': image, 'image_array': np.array(image)})
 
 
-def config_uploader():
-    uploaded_file = st.file_uploader(
-        'Upload JSON file with saved settings',
-        type='json',
-    )
-    if uploaded_file is not None:
-        config = json.load(uploaded_file)
-        state_dict.update({'loaded': config})
+# def config_uploader():
+#     uploaded_file = st.file_uploader(
+#         'Upload JSON file with saved settings',
+#         type='json',
+#     )
+
+#     if uploaded_file is not None:
+#         config = json.load(uploaded_file)
+#         state_dict.update({'loaded': config})
+
+
+@st.cache(allow_output_mutation=True)
+def config_uploader(uploaded_file):
+    file_path = uploaded_file
+    config = json.load(uploaded_file)
+    state_dict.update({'loaded': config})

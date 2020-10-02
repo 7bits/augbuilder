@@ -23,7 +23,7 @@ def num_interval(current_choice, session_state, **params):
     )
 
 
-def radio(current_choice, session_state, **params): 
+def radio(current_choice, session_state, **params): # equalize
     param_name = params['param_name']
     options_list = params['options_list']
     element_key = hash(param_name + current_choice + str(session_state))

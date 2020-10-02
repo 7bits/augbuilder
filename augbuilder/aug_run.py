@@ -10,7 +10,7 @@ from code_generator import build_code
 from files_uploaders import config_uploader, image_uploader
 from layout import return_layout
 from session_state import get
-from state_dict import aug_dict, clear_dict, oneof_dict, state_dict
+from state_dict import aug_dict, clear_dict, oneof_dict, state_dict, file_path
 from string_builders import build_string
 
 session_state = get(id=uuid.uuid4())
@@ -19,7 +19,15 @@ config_path = os.path.join(root_path, 'augmentation.json')
 
 clear_dict(session_state)
 image_uploader()
-config_uploader()
+
+uploaded_file = st.file_uploader(
+    'Upload JSON file with saved settings',
+    type='json',
+)
+
+if uploaded_file is not None and uploaded_file !=file_path:
+    config_uploader(uploaded_file)
+
 st.text('Upload an image, then select transformation from the \
 list.\nTo apply OneOf use OneOf at the beginning and StopOneOf\
  to close it.')
@@ -32,6 +40,8 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
     }
     state_dict.update({'image_params': image_params})
 
+    current_aug = []
+
     augmentations = load_augmentations_config(image_params, config_path)
 
     current_aug = select_next_aug(augmentations)
@@ -40,7 +50,8 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
 
     saved_aug = []
     
-    if current_aug:   
+    if current_aug:  
+        # print("CURRENT", current_aug) 
         for i in current_aug:
             oneof = ['OneOf', 'StopOneOf']
             current_choice = i
@@ -60,6 +71,7 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
                     augmentations,
                     session_state,
                 )})
+                # print(aug_dict.keys())
             elif transorm_check and oneof_flag:
                 oneof_dict.update({current_choice: dict_update(
                     aug,
@@ -75,9 +87,15 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
                     aug_dict.update({'OneOf': oneof_dict.copy()})
                 oneof_dict.clear()
 
+
     for keys in list(aug_dict.keys()):
         if current_aug and keys not in current_aug:
+            # print("DELETE", aug_dict.keys())
             aug_dict.pop(keys)
+            if 'loaded' in state_dict.keys() and state_dict['loaded']:
+                if keys in state_dict['loaded']:
+                    state_dict['loaded'].pop(keys)
+    # print('1',aug_dict)
 
     images = [state_dict['image_array'] for i in range(9)]
 
