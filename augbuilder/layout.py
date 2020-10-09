@@ -23,7 +23,12 @@ def return_layout():
     .main .element-container:nth-child(6),
     .main .element-container:nth-child(4),
     .main .element-container:nth-child(5){
-        width: 30% !important;
+        width: 100% !important;
+
+    }
+
+    .main .element-container:nth-child(5){
+    height: 0% !important;
 
     }
 
@@ -33,7 +38,7 @@ def return_layout():
     } 
    
     .main .element-container:nth-child(15),
-    .main .element-container:nth-child(7),
+    .main .element-container:nth-child(16),
     .main .element-container:nth-child(8),
     .main .element-container:nth-child(9),
     .main .element-container:nth-child(10),

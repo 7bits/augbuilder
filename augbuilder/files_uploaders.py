@@ -35,4 +35,6 @@ def image_uploader():
 def config_uploader(uploaded_file):
     file_path = uploaded_file
     config = json.load(uploaded_file)
+    if 'loaded' in state_dict.keys():
+        state_dict['loaded'].clear()
     state_dict.update({'loaded': config})

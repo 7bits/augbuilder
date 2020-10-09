@@ -13,6 +13,7 @@ from session_state import get
 from state_dict import aug_dict, clear_dict, oneof_dict, state_dict, file_path
 from string_builders import build_string
 
+
 session_state = get(id=uuid.uuid4())
 root_path = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(root_path, 'augmentation.json')
@@ -24,15 +25,19 @@ uploaded_file = st.file_uploader(
     'Upload JSON file with saved settings',
     type='json',
 )
-
-if uploaded_file is not None and uploaded_file !=file_path:
+if uploaded_file is not None and uploaded_file != file_path:  # does this check do smth(it stil reloads all files)
     config_uploader(uploaded_file)
+else: 
+    empty = st.empty()
 
 st.text('Upload an image, then select transformation from the \
 list.\nTo apply OneOf use OneOf at the beginning and StopOneOf\
  to close it.')
 
 if 'image' in list(state_dict.keys()):  # noqa: C901
+    image_display = return_layout()
+    st.markdown(image_display, unsafe_allow_html=True)
+
     st.image(state_dict['image'])
     image_params = {
         'width': state_dict['image_array'].shape[1],
@@ -71,7 +76,7 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
                     augmentations,
                     session_state,
                 )})
-                # print(aug_dict.keys())
+                # print("keys", aug_dict.keys())
             elif transorm_check and oneof_flag:
                 oneof_dict.update({current_choice: dict_update(
                     aug,
@@ -90,17 +95,12 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
 
     for keys in list(aug_dict.keys()):
         if current_aug and keys not in current_aug:
-            # print("DELETE", aug_dict.keys())
             aug_dict.pop(keys)
             if 'loaded' in state_dict.keys() and state_dict['loaded']:
                 if keys in state_dict['loaded']:
                     state_dict['loaded'].pop(keys)
-    # print('1',aug_dict)
 
     images = [state_dict['image_array'] for i in range(9)]
-
-    image_display = return_layout()
-    st.markdown(image_display, unsafe_allow_html=True)
 
     final_results = apply_changes(aug_dict)
     error = 0
@@ -123,4 +123,6 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
             st.text(build_string())
             st.header('Augmentation code:')
             st.text(build_code())
+
     st.sidebar.button('refresh images')
+        

@@ -10,3 +10,5 @@ def clear_dict(state):
         state_dict.clear()
         state_dict.update({'session': state})
         aug_dict.clear()
+        file_path = None
+        

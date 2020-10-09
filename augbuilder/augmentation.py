@@ -14,6 +14,7 @@ from elements import (
 )
 from state_dict import state_dict, aug_dict
 
+import rerun
 
 def add_loaded(saved_aug, selected_aug, selection):
     curr_selection = []
@@ -59,7 +60,6 @@ def select_next_aug(augmentations):
     while (selected_aug[-1] != 'None'):
 
         if loaded_dict and not cleared:
-
             saved_aug = loaded_dict[0]
             loaded_dict.remove(saved_aug)
 
@@ -87,8 +87,8 @@ def select_next_aug(augmentations):
                 key=len(selected_aug) + 1,
             ))
 
-    print("RETURNED",list(filter(lambda a: a != 'None', selected_aug)))
-    return list(filter(lambda a: a != 'None', selected_aug))
+    returned_list = list(filter(lambda a: a != 'None', selected_aug))      
+    return returned_list
             
 
 def apply_changes(augment_dict, apply_compose=True):
