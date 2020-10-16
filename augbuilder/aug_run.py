@@ -10,9 +10,8 @@ from code_generator import build_code
 from files_uploaders import config_uploader, image_uploader
 from layout import return_layout
 from session_state import get
-from state_dict import aug_dict, clear_dict, oneof_dict, state_dict, file_path
+from state_dict import aug_dict, clear_dict, file_path, oneof_dict, state_dict
 from string_builders import build_string
-
 
 session_state = get(id=uuid.uuid4())
 root_path = os.path.dirname(os.path.abspath(__file__))
@@ -125,4 +124,3 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
             st.text(build_code())
 
     st.sidebar.button('refresh images')
-        

@@ -1,7 +1,9 @@
-import albumentations
-import streamlit as st
 import random
 
+import albumentations
+import streamlit as st
+
+import rerun
 from elements import (
     checkbox,
     element_description,
@@ -12,9 +14,8 @@ from elements import (
     several_nums,
     text_input,
 )
-from state_dict import state_dict, aug_dict
+from state_dict import aug_dict, state_dict
 
-import rerun
 
 def add_loaded(saved_aug, selected_aug, selection):
     curr_selection = []

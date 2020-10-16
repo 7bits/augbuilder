@@ -4,7 +4,7 @@ import numpy as np
 import streamlit as st
 from PIL import Image
 
-from state_dict import state_dict, file_path
+from state_dict import file_path, state_dict
 
 
 def image_uploader():

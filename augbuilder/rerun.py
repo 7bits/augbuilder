@@ -2,10 +2,9 @@ import importlib
 import pathlib
 import types
 
+import streamlit as st
 from watchdog import events
 from watchdog.observers import polling
-
-import streamlit as st
 
 
 def get_session_id():
