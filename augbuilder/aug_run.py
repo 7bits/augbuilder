@@ -6,6 +6,7 @@ import streamlit as st
 
 from additional_utils import load_augmentations_config
 from augmentation import apply_changes, dict_update, select_next_aug
+from benchmark import benchmark
 from code_generator import build_code
 from files_uploaders import image_uploader
 from layout import return_layout
@@ -97,8 +98,14 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
             if error == 0:
                 st.image(apply_transform['image'])
         if error == 0:
+
             st.header('Current settings list:')
             st.text(build_string())
             st.header('Augmentation code:')
             st.text(build_code())
+            
     st.sidebar.button('refresh images')
+    if st.sidebar.button('Run Benchmark'): 
+        slot = st.empty()
+        slot.text('Benchmark Running ...')
+        slot.text(f'Approximate time for one photo (sec): {benchmark()}')
