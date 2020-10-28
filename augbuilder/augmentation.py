@@ -1,6 +1,9 @@
+import random
+
 import albumentations
 import streamlit as st
 
+import rerun
 from elements import (
     checkbox,
     element_description,
@@ -11,47 +14,83 @@ from elements import (
     several_nums,
     text_input,
 )
+from state_dict import aug_dict, state_dict
+
+
+def add_loaded(saved_aug, selected_aug, selection):
+    curr_selection = []
+    curr_selection.append(saved_aug)
+
+    select_string = 'select transformation {0}: '.format(
+            len(selected_aug) + 1,
+    )
+    selection.remove(saved_aug)
+        
+    downloaded_selection = curr_selection + selection
+    return (st.sidebar.selectbox(
+        select_string,
+        downloaded_selection,
+        key=str(len(selected_aug)) + saved_aug,
+    ))
 
 
 def select_next_aug(augmentations):
-    """
-    Returns last selected transformation.
-
-    Parameters:
-        augmentations: dict with all available transformation from json file
-
-    Returns: 
-        last selected transformation
-    """
     oneof_list = [['OneOf'], ['StopOneOf']]
     oneof = ['OneOf', 'StopOneOf']
     default_selection = list(augmentations.keys())
     selection = ['None'] + oneof_list[0] + default_selection
-    selected_aug = [
-        st.sidebar.selectbox('select transformation 1: ', selection),
-    ]
+
+    selected_aug = [] 
+    loaded_dict = []
+    cleared = False
+
+    if 'loaded' in state_dict.keys() and state_dict['loaded']:
+        loaded_dict = list(state_dict['loaded'].keys())
+        
+        saved_aug = loaded_dict[0]
+        loaded_dict.remove(saved_aug)
+
+        if saved_aug not in selected_aug:
+            selected_aug.append(add_loaded(saved_aug, selected_aug, selection))
+
+    else: 
+        selected_aug = [
+            st.sidebar.selectbox('select transformation 1: ', selection),
+        ]
 
     while (selected_aug[-1] != 'None'):
-        transformation_number = len(selected_aug) + 1
-        select_string = 'select transformation {0}: '.format(
-            transformation_number,
-        )
-        
-        current_aug = selected_aug[-1] 
-        if current_aug == oneof[0]:
-            oneof_ind = selection.index(oneof[0])
-            selection[oneof_ind] = oneof[1]
-        elif current_aug == oneof[1]: 
-            stoponeof_ind = selection.index(oneof[1])
-            selection[stoponeof_ind] = oneof[0]
 
-        if selected_aug and current_aug not in oneof:
-            selection.remove(current_aug)
+        if loaded_dict and not cleared:
+            saved_aug = loaded_dict[0]
+            loaded_dict.remove(saved_aug)
 
-        selected_aug.append(st.sidebar.selectbox(select_string, selection))
-    
-    return selected_aug[:-1]
+            if saved_aug not in selected_aug:
+                selected_aug.append(add_loaded(saved_aug, selected_aug, selection))
+        else:
 
+            select_string = 'select transformation {0}: '.format(
+            len(selected_aug) + 1,
+            )
+
+            current_aug = selected_aug[-1] 
+            if current_aug == oneof[0]:
+                oneof_ind = selection.index(oneof[0])
+                selection[oneof_ind] = oneof[1]
+            elif current_aug == oneof[1]: 
+                stoponeof_ind = selection.index(oneof[1])
+                selection[stoponeof_ind] = oneof[0]
+            elif selected_aug and current_aug in selection and selected_aug is not None:
+                selection.remove(current_aug)
+
+            selected_aug.append(st.sidebar.selectbox(
+                select_string,
+                selection,
+                key=len(selected_aug) + 1,
+            ))
+
+    returned_list = list(filter(lambda a: a != 'None', selected_aug))      
+    return returned_list
+            
 
 def apply_changes(augment_dict, apply_compose=True):
     """

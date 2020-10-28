@@ -1,5 +1,6 @@
 import os
 import uuid
+import time
 
 import numpy as np
 import streamlit as st
@@ -8,10 +9,10 @@ from additional_utils import load_augmentations_config
 from augmentation import apply_changes, dict_update, select_next_aug
 from benchmark import benchmark
 from code_generator import build_code
-from files_uploaders import image_uploader
+from files_uploaders import config_uploader, image_uploader
 from layout import return_layout
 from session_state import get
-from state_dict import aug_dict, clear_dict, oneof_dict, state_dict
+from state_dict import aug_dict, clear_dict, file_path, oneof_dict, state_dict
 from string_builders import build_string
 
 session_state = get(id=uuid.uuid4())
@@ -20,11 +21,24 @@ config_path = os.path.join(root_path, 'augmentation.json')
 
 clear_dict(session_state)
 image_uploader()
+
+uploaded_file = st.file_uploader(
+    'Upload JSON file with saved settings',
+    type='json',
+)
+if uploaded_file is not None and uploaded_file != file_path:  # does this check do smth(it stil reloads all files)
+    config_uploader(uploaded_file)
+else: 
+    empty = st.empty()
+
 st.text('Upload an image, then select transformation from the \
 list.\nTo apply OneOf use OneOf at the beginning and StopOneOf\
  to close it.')
 
 if 'image' in list(state_dict.keys()):  # noqa: C901
+    image_display = return_layout()
+    st.markdown(image_display, unsafe_allow_html=True)
+
     st.image(state_dict['image'])
     image_params = {
         'width': state_dict['image_array'].shape[1],
@@ -32,13 +46,18 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
     }
     state_dict.update({'image_params': image_params})
 
+    current_aug = []
+
     augmentations = load_augmentations_config(image_params, config_path)
 
     current_aug = select_next_aug(augmentations)
 
     oneof_flag = False
 
-    if current_aug:
+    saved_aug = []
+    
+    if current_aug:  
+        # print("CURRENT", current_aug) 
         for i in current_aug:
             oneof = ['OneOf', 'StopOneOf']
             current_choice = i
@@ -47,6 +66,7 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
 
             transorm_check = i not in oneof
             aug = None
+
             if transorm_check and augmentations[current_choice]:
                 aug = augmentations[current_choice]
 
@@ -57,6 +77,7 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
                     augmentations,
                     session_state,
                 )})
+                # print("keys", aug_dict.keys())
             elif transorm_check and oneof_flag:
                 oneof_dict.update({current_choice: dict_update(
                     aug,
@@ -75,11 +96,11 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
     for keys in list(aug_dict.keys()):
         if current_aug and keys not in current_aug:
             aug_dict.pop(keys)
+            if 'loaded' in state_dict.keys() and state_dict['loaded']:
+                if keys in state_dict['loaded']:
+                    state_dict['loaded'].pop(keys)
 
     images = [state_dict['image_array'] for i in range(9)]
-
-    image_display = return_layout()
-    st.markdown(image_display, unsafe_allow_html=True)
 
     final_results = apply_changes(aug_dict)
     error = 0
@@ -103,9 +124,10 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
             st.text(build_string())
             st.header('Augmentation code:')
             st.text(build_code())
-            
     st.sidebar.button('refresh images')
+
     if st.sidebar.button('Run Benchmark'): 
         slot = st.empty()
-        slot.text('Benchmark Running ...')
-        slot.text(f'Approximate time for one photo (sec): {benchmark()}')
+        #slot.text('Benchmark Running ...')
+        #slot.text(f'Approximate time for one photo (sec): {benchmark()}')
+        benchmark(slot)
