@@ -1,6 +1,5 @@
 import os
 import uuid
-import time
 
 import numpy as np
 import streamlit as st
@@ -128,6 +127,4 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
 
     if st.sidebar.button('Run Benchmark'): 
         slot = st.empty()
-        #slot.text('Benchmark Running ...')
-        #slot.text(f'Approximate time for one photo (sec): {benchmark()}')
         benchmark(slot)
