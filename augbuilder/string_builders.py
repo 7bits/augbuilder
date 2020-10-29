@@ -51,7 +51,7 @@ def radio_params(param_name):
     Returns text values for some radio buttons instead of numeric.
 
     Parameters:
-        param_name: mane for radio buttons setting 
+        param_name: name for radio buttons setting 
 
     Returns:
         dict with text values if the selected setting has a specific radio\
@@ -87,6 +87,12 @@ def radio_params(param_name):
 
 
 def check_oneof_dict(current_aug):
+    """
+    Returns transformation only for current oneof.
+
+    Parameters:
+        current_aug: all selected transformations
+    """
     oneof_keys = list(oneof_dict.keys())
     indexes = [current_aug.index(x) for x in oneof_keys]
     first = indexes[-1]
