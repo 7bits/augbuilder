@@ -57,7 +57,6 @@ def select_next_aug(augmentations):
             selection.remove(current_aug)
 
         selected_aug.append(st.sidebar.selectbox(select_string, selection))
-
     return selected_aug[:-1]
 
 
