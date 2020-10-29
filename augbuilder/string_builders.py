@@ -2,7 +2,7 @@ import json
 
 import albumentations
 
-from state_dict import aug_dict
+from state_dict import aug_dict, oneof_dict
 
 
 def build_string():
@@ -84,3 +84,16 @@ def radio_params(param_name):
     if param_name in radio_values:
         return radio_values.get(param_name)
     return None
+
+
+def check_oneof_dict(current_aug):
+    oneof_keys = list(oneof_dict.keys())
+    indexes = [current_aug.index(x) for x in oneof_keys]
+    first = indexes[-1]
+    counter = len(oneof_dict) - 1 
+    while counter >= 0:
+        if indexes[counter] - first <= 1:
+            first = indexes[counter]
+        else:
+            oneof_dict.pop(oneof_keys[counter])
+        counter -= 1

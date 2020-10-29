@@ -11,7 +11,7 @@ from files_uploaders import image_uploader
 from layout import return_layout
 from session_state import get
 from state_dict import aug_dict, clear_dict, oneof_dict, state_dict
-from string_builders import build_string
+from string_builders import build_string, check_oneof_dict
 
 session_state = get(id=uuid.uuid4())
 root_path = os.path.dirname(os.path.abspath(__file__))
@@ -73,16 +73,7 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
                 if current_aug.index(i) - current_aug.index(
                     oneof[0] + str(oneof_counter),
                 ) > 1:
-                    keys = list(oneof_dict.keys())
-                    indexes = [current_aug.index(x) for x in keys]
-                    first = indexes[-1]
-                    counter = len(oneof_dict) -1 
-                    while counter >= 0:
-                        if indexes[counter] - first <= 1:
-                            first = indexes[counter]
-                        else:
-                            oneof_dict.pop(keys[counter])
-                        counter-= 1
+                    check_oneof_dict(current_aug)
                     aug_dict.update({
                         'OneOf{0}'.format(oneof_counter): oneof_dict.copy(),
                     })

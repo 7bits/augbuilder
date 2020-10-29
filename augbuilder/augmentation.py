@@ -31,26 +31,28 @@ def select_next_aug(augmentations):
         st.sidebar.selectbox('select transformation 1: ', selection),
     ]
     oneof_counter = 0
-
-    while (selected_aug[-1] != 'None'):
+    last_elem = -1
+    while (selected_aug[last_elem] != 'None'):
         transformation_number = len(selected_aug) + 1
         select_string = 'select transformation {0}: '.format(
             transformation_number,
         )
         
-        current_aug = selected_aug[-1] 
+        current_aug = selected_aug[last_elem] 
         if current_aug == oneof[0]:
-            current_aug = oneof[0] + str(oneof_counter)
-            selected_aug[-1] = current_aug
+            oneof_start = oneof[0]
+            current_aug = oneof_start + str(oneof_counter)
+            selected_aug[last_elem] = current_aug
 
-            oneof_ind = selection.index(oneof[0])
+            oneof_ind = selection.index(oneof_start)
             selection[oneof_ind] = oneof[1]
-        elif current_aug == oneof[1]: 
-            selected_aug[-1] = oneof[1] + str(oneof_counter)
-            current_aug = oneof[1] + str(oneof_counter)
+        elif current_aug == oneof[1]:
+            end_oneof = oneof[1]
+            selected_aug[last_elem] = end_oneof + str(oneof_counter)
+            current_aug = end_oneof + str(oneof_counter)
 
             oneof_counter += 1
-            stoponeof_ind = selection.index(oneof[1])
+            stoponeof_ind = selection.index(end_oneof)
             selection[stoponeof_ind] = oneof[0]
 
         if selected_aug and current_aug[:-1] not in oneof:
