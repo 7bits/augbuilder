@@ -34,7 +34,7 @@ pip install augbuilder
 
 ### Run the app
 
-Run `augbuilder` from the terminal.
+Run `augbuilder` from the terminal using `make run` command.
 
 After a few seconds the browser will open the page [localhost:8501](http://localhost:8501).
 
@@ -86,3 +86,36 @@ HueSaturationValue:
     sat_shift_limit: (-30, 30)
     val_shift_limit: (-20, 20)
 ```
+
+### Python code example
+```python
+from albumentations.pytorch import ToTensorV2
+from albumentations import (
+    Compose,
+    CenterCrop,
+    CoarseDropout,
+    Flip,
+    OneOf,
+    Blur,
+)
+
+transformations = Compose([
+    OneOf([
+        Blur(always_apply=False, p=0.5, blur_limit=(3, 7)),
+    ], p=0.5),
+    OneOf([
+        CenterCrop(always_apply=False, p=0.5, height=384, width=512),
+        CoarseDropout(always_apply=False, p=0.5, max_holes=8, max_height=8,
+                      max_width=8, min_holes=8, min_height=8, min_width=8),
+    ], p=0.5),
+    Flip(always_apply=False, p=0.5),
+    ToTensorV2(),
+])
+```
+
+### Pipeline Benchmark
+
+Estimating an average time of applying selected transformations to one image.
+
+
+
