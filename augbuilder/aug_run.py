@@ -114,7 +114,3 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
             st.header('Augmentation code:')
             st.text(build_code())
     st.sidebar.button('refresh images')
-
-    if st.sidebar.button('Run Benchmark'): 
-        slot = st.empty()
-        benchmark(slot)

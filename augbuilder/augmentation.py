@@ -1,9 +1,6 @@
-import random
-
 import albumentations
 import streamlit as st
 
-import rerun
 from elements import (
     checkbox,
     element_description,
@@ -14,27 +11,16 @@ from elements import (
     several_nums,
     text_input,
 )
-from state_dict import aug_dict, state_dict
-
-
-def add_loaded(saved_aug, selected_aug, selection):
-    curr_selection = []
-    curr_selection.append(saved_aug)
-
-    select_string = 'select transformation {0}: '.format(
-            len(selected_aug) + 1,
-    )
-    selection.remove(saved_aug)
-        
-    downloaded_selection = curr_selection + selection
-    return (st.sidebar.selectbox(
-        select_string,
-        downloaded_selection,
-        key=str(len(selected_aug)) + saved_aug,
-    ))
 
 
 def select_next_aug(augmentations):
+    """
+    Returns last selected transformation.
+    Parameters:
+        augmentations: dict with all available transformation from json file
+    Returns: 
+        last selected transformation
+    """
     oneof_list = [['OneOf'], ['StopOneOf']]
     oneof = ['OneOf', 'StopOneOf']
     default_selection = list(augmentations.keys())
@@ -73,10 +59,10 @@ def select_next_aug(augmentations):
         selected_aug.append(st.sidebar.selectbox(select_string, selection))
     return selected_aug[:-1]
 
+
 def apply_changes(augment_dict, apply_compose=True):
     """
     Composes selected transformation.
-
     Parameters:
         augment_dict: dict with selected transformations
         apply_compose: if True, returns ready to apply transformation
@@ -103,7 +89,6 @@ def apply_changes(augment_dict, apply_compose=True):
 def add_transformation(final_transform, curr_transf, **current_dict):
     """
     Adds last transformation to existing ones.
-
     Parameters:
         final_transform: all transformation with params
         curr_transf: selected transformation
@@ -131,12 +116,10 @@ def add_transformation(final_transform, curr_transf, **current_dict):
 def setup_current_choice(current_choice, augmentations, session_state):
     """
     Displays settings current parameters format and returns its value.
-
     Parameters:
         current_choice: selected currnet transformation as a string
         augmentations: dict with all available transformation from json file 
         session_state: current session information
-
     Returns:
         current_params: dict with settings for transformation and its values
     """
@@ -187,7 +170,6 @@ def dict_update(
 ):
     """
     Returns settings for current transformation.
-
     Parameters:
         aug: settings for current_choice
         current_choice: selected currnet transformation as a string
