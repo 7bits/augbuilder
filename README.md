@@ -51,14 +51,16 @@ Watch this demo video of usage.
 3. Configure transformations below the list of dropdowns.
 4. Random results are shown in the main area.
 5. To regenerate results click "Refresh images" button.
-6. Click "Download config" to get the yaml config and a python integration script.
+6. Click on the resizing the image button to enlarge one of the generated images.
+7. To use generated transformations, copy generated code with imports. 
 
 ### How to use ONE-OF
 
-Select oneof in list if you want to add this into you transformation list.
-Then you can add different transformations in it.
-To close oneof select StopOneOf.
-Please, don't select THE SAME transformation, it can caused some errors which will be removed later.
+Select oneof in list if you want to add this into you transformation list.  
+Then you can add different transformations in it.   
+To close oneof select StopOneOf.   
+You can add more than one oneof to your transformation list.
+
 
 ### Pipeline config example
 
