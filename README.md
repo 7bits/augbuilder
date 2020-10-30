@@ -34,7 +34,7 @@ pip install augbuilder
 
 ### Run the app
 
-Run `augbuilder` from the terminal.
+Run `augbuilder` from the terminal using `make run` command.
 
 After a few seconds the browser will open the page [localhost:8501](http://localhost:8501).
 
@@ -51,14 +51,16 @@ Watch this demo video of usage.
 3. Configure transformations below the list of dropdowns.
 4. Random results are shown in the main area.
 5. To regenerate results click "Refresh images" button.
-6. Click "Download config" to get the yaml config and a python integration script.
+6. Click on the resizing the image button to enlarge one of the generated images.
+7. To use generated transformations, copy generated code with imports. 
 
 ### How to use ONE-OF
 
-Select oneof in list if you want to add this into you transformation list.
-Then you can add different transformations in it.
-To close oneof select StopOneOf.
-Please, don't select THE SAME transformation, it can caused some errors which will be removed later.
+Select oneof in list if you want to add this into you transformation list.  
+Then you can add different transformations in it.   
+To close oneof select StopOneOf.   
+You can add more than one oneof to your transformation list.
+
 
 ### Pipeline config example
 
@@ -86,3 +88,36 @@ HueSaturationValue:
     sat_shift_limit: (-30, 30)
     val_shift_limit: (-20, 20)
 ```
+
+### Python code example
+```python
+from albumentations.pytorch import ToTensorV2
+from albumentations import (
+    Compose,
+    CenterCrop,
+    CoarseDropout,
+    Flip,
+    OneOf,
+    Blur,
+)
+
+transformations = Compose([
+    OneOf([
+        Blur(always_apply=False, p=0.5, blur_limit=(3, 7)),
+    ], p=0.5),
+    OneOf([
+        CenterCrop(always_apply=False, p=0.5, height=384, width=512),
+        CoarseDropout(always_apply=False, p=0.5, max_holes=8, max_height=8,
+                      max_width=8, min_holes=8, min_height=8, min_width=8),
+    ], p=0.5),
+    Flip(always_apply=False, p=0.5),
+    ToTensorV2(),
+])
+```
+
+### Pipeline Benchmark
+
+Estimating an average time of applying selected transformations to one image.
+
+
+

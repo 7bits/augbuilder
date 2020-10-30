@@ -11,7 +11,7 @@ from files_uploaders import image_uploader
 from layout import return_layout
 from session_state import get
 from state_dict import aug_dict, clear_dict, oneof_dict, state_dict
-from string_builders import build_string
+from string_builders import build_string, check_oneof_dict
 
 session_state = get(id=uuid.uuid4())
 root_path = os.path.dirname(os.path.abspath(__file__))
@@ -36,15 +36,16 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
     current_aug = select_next_aug(augmentations)
 
     oneof_flag = False
+    oneof_counter = 0
 
     if current_aug:
         for i in current_aug:
             oneof = ['OneOf', 'StopOneOf']
             current_choice = i
-            check_oneof = oneof[0] in current_aug
-            check_stoponeof = oneof[1] not in current_aug
+            check_oneof = oneof[0] + str(oneof_counter) in current_aug
+            check_stoponeof = oneof[1] + str(oneof_counter) not in current_aug
 
-            transorm_check = i not in oneof
+            transorm_check = i[:-1] not in oneof
             aug = None
             if transorm_check and augmentations[current_choice]:
                 aug = augmentations[current_choice]
@@ -57,18 +58,27 @@ if 'image' in list(state_dict.keys()):  # noqa: C901
                     session_state,
                 )})
             elif transorm_check and oneof_flag:
+
                 oneof_dict.update({current_choice: dict_update(
                     aug,
                     current_choice,
                     augmentations,
                     session_state,
                 )})
-            elif i == oneof[0] or (check_oneof and check_stoponeof):
+
+            elif i[:-1] == oneof[0] or (check_oneof and check_stoponeof):
                 oneof_flag = True
-            elif i == oneof[1]:
+            elif i[:-1] == oneof[1]:
                 oneof_flag = False
-                if current_aug.index(i) - current_aug.index(oneof[0]) > 1:
-                    aug_dict.update({'OneOf': oneof_dict.copy()})
+                if current_aug.index(i) - current_aug.index(
+                    oneof[0] + str(oneof_counter),
+                ) > 1:
+                    check_oneof_dict(current_aug)
+                    aug_dict.update({
+                        'OneOf{0}'.format(oneof_counter): oneof_dict.copy(),
+                    })
+                    oneof_counter += 1
+
                 oneof_dict.clear()
 
     for keys in list(aug_dict.keys()):

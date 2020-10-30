@@ -30,26 +30,35 @@ def select_next_aug(augmentations):
     selected_aug = [
         st.sidebar.selectbox('select transformation 1: ', selection),
     ]
-
-    while (selected_aug[-1] != 'None'):
+    oneof_counter = 0
+    last_elem = -1
+    while (selected_aug[last_elem] != 'None'):
         transformation_number = len(selected_aug) + 1
         select_string = 'select transformation {0}: '.format(
             transformation_number,
         )
         
-        current_aug = selected_aug[-1] 
+        current_aug = selected_aug[last_elem] 
         if current_aug == oneof[0]:
-            oneof_ind = selection.index(oneof[0])
+            oneof_start = oneof[0]
+            current_aug = oneof_start + str(oneof_counter)
+            selected_aug[last_elem] = current_aug
+
+            oneof_ind = selection.index(oneof_start)
             selection[oneof_ind] = oneof[1]
-        elif current_aug == oneof[1]: 
-            stoponeof_ind = selection.index(oneof[1])
+        elif current_aug == oneof[1]:
+            end_oneof = oneof[1]
+            selected_aug[last_elem] = end_oneof + str(oneof_counter)
+            current_aug = end_oneof + str(oneof_counter)
+
+            oneof_counter += 1
+            stoponeof_ind = selection.index(end_oneof)
             selection[stoponeof_ind] = oneof[0]
 
-        if selected_aug and current_aug not in oneof:
+        if selected_aug and current_aug[:-1] not in oneof:
             selection.remove(current_aug)
 
         selected_aug.append(st.sidebar.selectbox(select_string, selection))
-    
     return selected_aug[:-1]
 
 
@@ -92,9 +101,11 @@ def add_transformation(final_transform, curr_transf, **current_dict):
     Returns:
         final_transform: all transformation with params
     """
+    if 'OneOf' in curr_transf:
+        curr_transf = 'OneOf' 
     transform = getattr(albumentations, curr_transf)
     if (current_dict is not None):
-        if curr_transf == 'OneOf':
+        if 'OneOf' in curr_transf:
             apply_replay = False
             current_dict = apply_changes(current_dict, apply_replay)
             final_transform.append(transform(current_dict))
