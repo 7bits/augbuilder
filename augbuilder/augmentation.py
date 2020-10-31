@@ -16,8 +16,10 @@ from elements import (
 def select_next_aug(augmentations):
     """
     Returns last selected transformation.
+    
     Parameters:
         augmentations: dict with all available transformation from json file
+
     Returns: 
         last selected transformation
     """
@@ -63,6 +65,7 @@ def select_next_aug(augmentations):
 def apply_changes(augment_dict, apply_compose=True):
     """
     Composes selected transformation.
+
     Parameters:
         augment_dict: dict with selected transformations
         apply_compose: if True, returns ready to apply transformation
@@ -89,6 +92,7 @@ def apply_changes(augment_dict, apply_compose=True):
 def add_transformation(final_transform, curr_transf, **current_dict):
     """
     Adds last transformation to existing ones.
+
     Parameters:
         final_transform: all transformation with params
         curr_transf: selected transformation
@@ -116,10 +120,12 @@ def add_transformation(final_transform, curr_transf, **current_dict):
 def setup_current_choice(current_choice, augmentations, session_state):
     """
     Displays settings current parameters format and returns its value.
+
     Parameters:
         current_choice: selected currnet transformation as a string
         augmentations: dict with all available transformation from json file 
         session_state: current session information
+
     Returns:
         current_params: dict with settings for transformation and its values
     """
@@ -170,6 +176,7 @@ def dict_update(
 ):
     """
     Returns settings for current transformation.
+
     Parameters:
         aug: settings for current_choice
         current_choice: selected currnet transformation as a string
