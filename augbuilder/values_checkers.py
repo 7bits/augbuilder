@@ -57,13 +57,3 @@ def limit_list_check(limits_list):
     elif limits_list[1] == 'image_width':
         limits_list[1] = state_dict['image_params']['width']
     return limits_list
-
-
-def load_default(default, current_choice, param_name):
-
-    is_loaded = 'loaded' in state_dict.keys()
-
-    if is_loaded and current_choice in state_dict['loaded'].keys():
-        saved = state_dict['loaded'][current_choice]
-        return saved[param_name] 
-    return default

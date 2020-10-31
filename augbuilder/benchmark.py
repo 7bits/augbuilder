@@ -1,4 +1,5 @@
-import time 
+import time
+
 import numpy as np
 
 from augmentation import apply_changes

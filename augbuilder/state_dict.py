@@ -1,7 +1,6 @@
 state_dict = {}
 aug_dict = {}
 oneof_dict = {}
-file_path = None
 
 
 def clear_dict(state):
@@ -10,4 +9,3 @@ def clear_dict(state):
         state_dict.clear()
         state_dict.update({'session': state})
         aug_dict.clear()
-
