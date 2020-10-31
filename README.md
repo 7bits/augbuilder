@@ -10,7 +10,7 @@
 - **Benchmarks** the pipeline.
 - Generates a JSON config and a tiny chunk of python code to **integrate with PyTorch** code.
 
-![Interface image](https://raw.githubusercontent.com/7bits/augbuilder/master/docs/images/screenshot_v2.png)
+![Interface image](https://raw.githubusercontent.com/7bits/augbuilder/TEST_MERGE/docs/images/screenshot_v2.png)
 
 > Powered by [Albumentations](https://albumentations.ai/) and [Streamlit](https://streamlit.io/).
 
