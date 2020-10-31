@@ -30,8 +30,13 @@ def build_code_substring(iterable):
 
 def search_for_inner_transformations(trans_dict):
     """
-    If oneOf option is used, finding names of OneOf's inner functions,
-    to make a correct import.
+    If oneOf option is used, finding names of OneOf's inner functions.
+
+    Args:
+        trans_dict: dictionary with augmentations.
+    
+    Returns:
+        list of augmentations
     """
     names = []
 
@@ -46,10 +51,17 @@ def search_for_inner_transformations(trans_dict):
             # supposing a common transformation, 
             # with transformation as a name and setting as a setting list.
             names.append(transformation)
-    return set(names)
+    
+    return list(set(names))
 
 
 def build_code():
+    """
+    Building a string with code to use in projects.
+
+    Returns: 
+        String already formatted via autopep8 for output.
+    """
     imports = search_for_inner_transformations(aug_dict)
     res_imports = build_code_substring(imports)
     composes = build_code_substring(apply_changes(aug_dict))

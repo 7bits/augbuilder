@@ -7,6 +7,13 @@ from state_dict import aug_dict, state_dict
 
 
 def benchmark(st_empty_field, num_experiments=100):
+    """
+    Measures timme spend to augment one image.
+
+    Args:
+        st_empty_field: st.empty() object to write changes
+        num_experiments: number of experiments to get average time.
+    """
     transforms = apply_changes(aug_dict, apply_compose=True)
     spent_time = []
 
@@ -17,9 +24,10 @@ def benchmark(st_empty_field, num_experiments=100):
 
     for it in range(num_experiments):
         if it % len(progress_bar) == 0:
-            progress_bar = progress_bar[:iter_counter] + \
-                '#' + \
-                progress_bar[iter_counter + 1:]
+            done = progress_bar[:iter_counter]
+            done_sym = '#'
+            to_be_done = progress_bar[iter_counter + 1:] 
+            progress_bar = done + done_sym + to_be_done
             st_empty_field.text(progress + progress_bar)
             iter_counter += 1
             
