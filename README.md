@@ -8,7 +8,7 @@
 - Runs in a browser.
 - Uses [Albumentations](https://albumentations.ai/) library to apply transformations.
 - **Benchmarks** the pipeline.
-- Generates a YAML config and a tiny chunk of python code to **integrate with PyTorch** code.
+- Generates a JSON config and a tiny chunk of python code to **integrate with PyTorch** code.
 
 ![Interface image](https://raw.githubusercontent.com/7bits/augbuilder/master/docs/images/screenshot_1.png)
 
@@ -50,43 +50,49 @@ Watch this demo video of usage.
 2. Use dropdown on left side to select transformations.
 3. Configure transformations below the list of dropdowns.
 4. Random results are shown in the main area.
-5. To regenerate results click "Refresh images" button.
+5. To regenerate results, click "Refresh images" button.
 6. Click on the resizing the image button to enlarge one of the generated images.
 7. To use generated transformations, copy generated code with imports. 
 
 ### How to use ONE-OF
 
-Select oneof in list if you want to add this into you transformation list.  
-Then you can add different transformations in it.   
-To close oneof select StopOneOf.   
-You can add more than one oneof to your transformation list.
+Select oneof in the list if you want to add this to your transformation list. Then you can add different transformations to it. To close oneof select StopOneOf. You can add more than one oneof to your transformation list.
 
 
 ### Pipeline config example
 
-```yaml
-RandomResizedCrop:
-    height: 299
-    width: 299
-    scale: (0.24, 1.0)
-    ratio: (0.75, 1.3333333333333333)
-    interpolation: 0
-Flip:
-Transpose:
-OneOf:
-    MotionBlur: {'blur_limit': (3, 53)}
-    Blur: {'blur_limit': (3, 22)}
-ShiftScaleRotate:
-    shift_limit: (-0.06, 0.06)
-    scale_limit: (-0.1, 0.1)
-    rotate_limit: (-90, 90)
-    interpolation: 0
-    border_mode: 3
-    value: [0, 0, 0]
-HueSaturationValue:
-    hue_shift_limit: (-20, 20)
-    sat_shift_limit: (-30, 30)
-    val_shift_limit: (-20, 20)
+```json
+{
+	"CLAHE": {
+		"clip_limit": [
+			1,
+			67
+		],
+		"tile_grid_size": [
+			8,
+			8
+		],
+		"p": 0.5
+	},
+	"Cutout": {
+		"num_holes": 8,
+		"max_h_size": 8,
+		"max_w_size": 8,
+		"fill_value": [
+			0,
+			0,
+			0
+		],
+		"p": 0.5
+	},
+	"Crop": {
+		"x_min": 0,
+		"x_max": 355,
+		"y_min": 0,
+		"y_max": 222,
+		"p": 0.5
+	}
+}
 ```
 
 ### Python code example
